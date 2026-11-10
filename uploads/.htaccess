@@ -1,0 +1,7 @@
+# Каталог загрузок: запрет выполнения скриптов (ТЗ 11.3)
+php_flag engine off
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8
+<FilesMatch "\.(php|phtml|phar|html?)$">
+  Require all denied
+</FilesMatch>
+Options -ExecCGI -Indexes

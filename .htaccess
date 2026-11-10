@@ -1,0 +1,10 @@
+# Apache: красивая страница 404 и запрет листинга каталогов (ТЗ 16.1, 11.3)
+Options -Indexes
+ErrorDocument 404 /404.php
+DirectoryIndex index.php
+
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|jpg|png|svg|webp)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+</IfModule>

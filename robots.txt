@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /cabinet.php
+Disallow: /favorites.php
+Disallow: /server/
+Disallow: /uploads/
+Disallow: /partials/
+Disallow: /sql/
+Sitemap: /sitemap.php
