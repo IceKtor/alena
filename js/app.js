@@ -24,7 +24,7 @@
     var opts = { method: 'POST', headers: { 'X-CSRF-Token': csrf, 'Accept': 'application/json' }, credentials: 'same-origin' };
     opts.body = body instanceof FormData ? body : new URLSearchParams(body);
     return fetch(url, opts).then(function (r) {
-      return r.json().catch(function () { return { ok: false, error: 'Ошибка сервера. Попробуйте позже.' }; })
+      return r.json().catch(function () { return { ok: false, error: 'Ошибка сервера (код ' + r.status + '). Попробуйте позже.' }; })
         .then(function (j) { j._status = r.status; return j; });
     }).catch(function () { return { ok: false, error: 'Нет связи с сервером. Проверьте интернет.' }; });
   }
