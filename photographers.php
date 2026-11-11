@@ -46,7 +46,7 @@ $sorts = ['new' => 'Сначала новые', 'price_asc' => 'Цена по в
   <div class="ph__row">
     <div>
       <h1>Фотографы</h1>
-      <p class="cnt" data-found>Найдено: <?= $total ?> <?= plural($total, 'фотограф', 'фотографа', 'фотографов') ?>, <?= e($f['city'] ?: 'все города') ?></p>
+      <p class="cnt" data-found>Найдено: <?= $total ?> <?= plural($total, 'фотограф', 'фотографа', 'фотографов') ?> · <?= e($f['city'] ?: 'все города') ?></p>
     </div>
     <form method="get" class="sort" id="sort-form">
       <?php foreach ($linkParams as $k => $v): if ($k === 'sort' || $v === null) continue; foreach ((array) $v as $vv): ?>
@@ -99,7 +99,7 @@ $sorts = ['new' => 'Сначала новые', 'price_asc' => 'Цена по в
         <input type="range" name="price_min" min="<?= PRICE_MIN ?>" max="<?= PRICE_MAX ?>" step="100" value="<?= $f['price_min'] ?>" aria-label="Цена от">
         <input type="range" name="price_max" min="<?= PRICE_MIN ?>" max="<?= PRICE_MAX ?>" step="100" value="<?= $f['price_max'] ?>" aria-label="Цена до">
       </div>
-      <div class="range__values"><output data-range-min><?= e(money($f['price_min'])) ?></output><output data-range-max><?= e(money($f['price_max'])) ?></output></div>
+      <div class="range__values mono"><output data-range-min><?= e(money($f['price_min'])) ?></output><output data-range-max><?= e(money($f['price_max'])) ?></output></div>
       <?php if ($f['price_error']): ?><p class="err" role="alert">Нижняя цена не может быть больше верхней</p><?php endif; ?>
     </fieldset>
 

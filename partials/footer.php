@@ -31,7 +31,7 @@
       </ul>
     </nav>
   </div>
-  <div class="site-footer__legal"><span>© 2026 <?= e(APP_NAME) ?>. Учебный проект: фото и данные условные.</span><span>Якутск</span></div>
+  <div class="site-footer__legal"><span>© 2026 <?= e(APP_NAME) ?> · учебный проект, фото и данные условные</span><span>Якутск</span></div>
 </footer>
 
 <?php require __DIR__ . '/modals.php'; ?>

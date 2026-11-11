@@ -41,7 +41,7 @@ require __DIR__ . '/partials/header.php';
     <div class="empty"><h2>Работ пока нет</h2><p class="mt">В этом жанре пока ничего не опубликовано.</p><a class="btn btn--primary" href="works.php">Показать все</a></div>
   <?php else: ?>
     <div class="mas">
-      <?php foreach ($items as $i => $w): ?><?= work_figure($w, true, $i < 3 && $w['hours_ago'] < 24) ?><?php endforeach; ?>
+      <?php foreach ($items as $w): ?><?= work_figure($w, true, $w['hours_ago'] < 24) ?><?php endforeach; ?>
     </div>
     <?php if ($more): ?>
       <div class="center"><a class="btn" href="<?= e(url('works.php', ['genre' => $genre, 'shown' => $shown + WORKS_PER_STEP])) ?>">Показать ещё</a></div>
@@ -49,6 +49,6 @@ require __DIR__ . '/partials/header.php';
   <?php endif; ?>
 </div>
 
-<?= cta_block('Хотите, чтобы вас нашли?', 'Профиль бесплатный, заводится за пару минут.') ?>
+<?= cta_block('Хотите, чтобы вас <em>увидели?</em>', 'Профиль бесплатный, заводится за пару минут.') ?>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>
