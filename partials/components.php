@@ -38,7 +38,7 @@ function work_card(array $w, bool $showTime = false, bool $isNew = false, bool $
         $html .= '<span class="badge badge--amber work__badge">Новое</span>';
     }
     $html .= '</span>';
-    $html .= '<span class="work__title">' . e($w['title']) . '</span>';
+    $html .= '<span class="work__row"><span class="work__title">' . e($w['title']) . '</span><span class="work__no mono">' . e(frame_no((int) $w['id'])) . '</span></span>';
     $html .= '<span class="work__meta">' . e($meta) . ($showTime ? ' · ' . e(time_ago($w['hours_ago'])) : '') . '</span>';
     $html .= '</a>';
     if ($withFav) {

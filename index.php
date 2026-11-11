@@ -16,8 +16,8 @@ require __DIR__ . '/partials/header.php';
 <section class="hero">
   <div class="container hero__grid">
     <div class="hero__text">
-      <h1>Найдите фотографа по его кадрам</h1>
-      <p class="lead">Смотрите портфолио, сравнивайте стили и цены, пишите напрямую. Фотографам — страница с работами за одну минуту.</p>
+      <h1>Найдите фотографа <em>по его кадрам</em></h1>
+      <p class="lead">Смотрите работы, сравнивайте цены и пишите фотографу напрямую. Если вы сами снимаете — заведите страницу с портфолио, это бесплатно.</p>
 
       <!-- Быстрый поиск (ФТ-01) → каталог с выбранными условиями -->
       <form class="quick-search" action="photographers.php" method="get">
@@ -61,7 +61,7 @@ require __DIR__ . '/partials/header.php';
       <h2>Свежие работы</h2>
       <a class="more-link" href="works.php">Смотреть все</a>
     </div>
-    <div class="grid grid--3">
+    <div class="mosaic">
       <?php foreach ($fresh as $w): ?><?= work_card($w) ?><?php endforeach; ?>
     </div>
   </div>
@@ -69,11 +69,11 @@ require __DIR__ . '/partials/header.php';
 
 <section class="section" id="how">
   <div class="container">
-    <h2>Как это работает</h2>
+    <h2>Как это устроено</h2>
     <ol class="steps">
-      <li class="card step"><span class="step__num step__num--orange">1</span><h3>Создайте профиль</h3><p class="muted">Расскажите о себе, укажите жанры, город и стоимость часа.</p></li>
-      <li class="card step"><span class="step__num step__num--amber">2</span><h3>Загрузите работы</h3><p class="muted">Добавьте лучшие кадры: они станут витриной для заказчиков.</p></li>
-      <li class="card step"><span class="step__num step__num--teal">3</span><h3>Получайте заявки</h3><p class="muted">Заказчики находят вас через поиск и фильтры и пишут напрямую.</p></li>
+      <li class="step"><span class="step__num" aria-hidden="true">1</span><h3>Заведите профиль</h3><p class="muted">Имя, город, жанры и сколько стоит час съёмки. Больше ничего не нужно.</p></li>
+      <li class="step"><span class="step__num" aria-hidden="true">2</span><h3>Выложите кадры</h3><p class="muted">Те, по которым вас должны узнавать. Остальное заказчик спросит сам.</p></li>
+      <li class="step"><span class="step__num" aria-hidden="true">3</span><h3>Отвечайте на заявки</h3><p class="muted">Заказчик находит вас в каталоге и пишет напрямую — заявки собираются в кабинете.</p></li>
     </ol>
   </div>
 </section>
@@ -81,8 +81,8 @@ require __DIR__ . '/partials/header.php';
 <section class="cta">
   <div class="container cta__inner">
     <div>
-      <h2>Разместите портфолио за минуту</h2>
-      <p>Профиль бесплатный: загрузите работы и ждите заявки.</p>
+      <h2>Снимаете? Покажите, что умеете</h2>
+      <p>Профиль бесплатный, заводится за пару минут.</p>
     </div>
     <button type="button" class="btn btn--dark btn--lg" data-open-modal="register">Создать профиль</button>
   </div>

@@ -47,6 +47,12 @@ function img_tag(string $file, string $alt, string $class = '', bool $lazy = tru
     );
 }
 
+/** Номер кадра в стиле плёнки («07A»), как в дизайн-системе. */
+function frame_no(int $id): string
+{
+    return sprintf('%02d%s', $id % 36 + 1, ['A', 'B', 'C'][$id % 3]);
+}
+
 function genre_name(string $slug): string
 {
     return genres()[$slug] ?? $slug;
