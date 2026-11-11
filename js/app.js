@@ -34,6 +34,8 @@
   if (toggle && panel) {
     toggle.addEventListener('click', function () {
       var open = panel.classList.toggle('is-open');
+      var hdr = document.getElementById('site-header'); if (hdr) hdr.classList.toggle('menu-open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
       toggle.setAttribute('aria-expanded', open);
       toggle.setAttribute('aria-label', open ? 'Закрыть меню' : 'Открыть меню');
     });
@@ -88,7 +90,7 @@
   function openRequest(btn) {
     var d = $('#modal-request');
     $('[name=photographer_id]', d).value = btn.getAttribute('data-id');
-    $('[data-req-name]', d).textContent = (btn.getAttribute('data-name') || '').split(' ')[0] || 'фотографу';
+    $('[data-req-name]', d).textContent = btn.getAttribute('data-dative') || (btn.getAttribute('data-name') || '').split(' ')[0] || 'фотографу';
     var av = $('[data-req-avatar]', d), src = btn.getAttribute('data-avatar');
     av.hidden = !src; if (src) av.src = src;
     clearErrors($('form', d));
@@ -123,7 +125,7 @@
     var p = $('[data-error-for="' + name + '"]', form);
     var input = form.elements[name];
     if (p) p.textContent = msg || '';
-    var wrap = input && input.closest && (input.closest('.input') || null);
+    var wrap = input && input.closest && (input.closest('.v') || null);
     if (wrap) wrap.classList.toggle('is-invalid', !!msg);
     if (input && input.setAttribute && !(input instanceof RadioNodeList)) input.setAttribute('aria-invalid', msg ? 'true' : 'false');
   }
@@ -206,9 +208,14 @@
   /* ── Каталог: фильтры ── */
   var ft = $('.filters-toggle'), fl = $('#filters');
   if (ft && fl) {
-    ft.addEventListener('click', function () {
-      var open = fl.classList.toggle('is-open'); ft.setAttribute('aria-expanded', open);
-    });
+    var setFilters = function (open) {
+      fl.classList.toggle('is-open', open); ft.setAttribute('aria-expanded', open);
+      document.body.classList.toggle('filters-open', open);
+    };
+    ft.addEventListener('click', function () { setFilters(!fl.classList.contains('is-open')); });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-close-filters]'), function (b) { b.addEventListener('click', function () { setFilters(false); }); });
+    document.addEventListener('click', function (e) { if (e.target === document.body && fl.classList.contains('is-open')) setFilters(false); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && fl.classList.contains('is-open')) setFilters(false); });
   }
   var range = $('[data-range]');
   if (range) {
@@ -262,7 +269,7 @@
   if (gal && more) {
     var step = +gal.dataset.step || 9;
     more.addEventListener('click', function () {
-      var hidden = $$('.masonry__item[hidden]', gal);
+      var hidden = $$('figure[hidden]', gal);
       hidden.slice(0, step).forEach(function (el) { el.hidden = false; });
       if (hidden.length <= step) more.hidden = true;
     });

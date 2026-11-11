@@ -35,95 +35,104 @@ page_start([
     'nav'         => 'catalog',
     'canonical'   => 'photographers.php', // страницы с фильтрами указывают canonical на каталог (ТЗ 16.1)
 ]);
+$activeFilters = count($f['genres']) + (int) $f['night'] + (int) $f['video'] + (int) $f['trip']
+    + ($f['city'] !== DEFAULT_CITY ? 1 : 0) + (($f['price_min'] > PRICE_MIN || $f['price_max'] < PRICE_MAX) ? 1 : 0);
 require __DIR__ . '/partials/header.php';
 
 $sorts = ['new' => 'Сначала новые', 'price_asc' => 'Цена по возрастанию', 'price_desc' => 'Цена по убыванию'];
 ?>
 
-<section class="section section--page">
-  <div class="container">
-    <div class="page-head">
-      <div>
-        <h1>Фотографы</h1>
-        <p class="muted" data-found>Найдено: <?= $total ?> <?= plural($total, 'фотограф', 'фотографа', 'фотографов') ?></p>
-      </div>
-      <form method="get" class="sort" id="sort-form">
-        <?php foreach ($linkParams as $k => $v): if ($k === 'sort' || $v === null) continue; foreach ((array) $v as $vv): ?>
-          <input type="hidden" name="<?= e($k) . (is_array($v) ? '[]' : '') ?>" value="<?= e((string) $vv) ?>">
-        <?php endforeach; endforeach; ?>
-        <label class="sr-only" for="sort">Сортировка</label>
-        <span class="input input--select input--pill"><select id="sort" name="sort" onchange="this.form.submit()">
+<section class="ph">
+  <div class="ph__row">
+    <div>
+      <h1>Фотографы</h1>
+      <p class="cnt" data-found>Найдено: <?= $total ?> <?= plural($total, 'фотограф', 'фотографа', 'фотографов') ?> · <?= e($f['city'] ?: 'все города') ?></p>
+    </div>
+    <form method="get" class="sort" id="sort-form">
+      <?php foreach ($linkParams as $k => $v): if ($k === 'sort' || $v === null) continue; foreach ((array) $v as $vv): ?>
+        <input type="hidden" name="<?= e($k) . (is_array($v) ? '[]' : '') ?>" value="<?= e((string) $vv) ?>">
+      <?php endforeach; endforeach; ?>
+      <div class="field">
+        <label for="sort"><small>Сортировка</small></label>
+        <div class="v v--select"><select id="sort" name="sort" onchange="this.form.submit()">
           <?php foreach ($sorts as $k => $label): ?><option value="<?= $k ?>"<?= $f['sort'] === $k ? ' selected' : '' ?>><?= e($label) ?></option><?php endforeach; ?>
-        </select><?= icon('chevron', 'icon--sm') ?></span>
-        <noscript><button class="btn btn--ghost btn--sm">Применить</button></noscript>
-      </form>
-    </div>
-
-    <button type="button" class="btn btn--ghost filters-toggle" aria-expanded="false" aria-controls="filters">
-      <?= icon('sliders') ?>Фильтры
-    </button>
-
-    <div class="catalog">
-      <form class="filters card" id="filters" method="get" action="photographers.php" data-filters>
-        <div class="filters__head">
-          <h2>Фильтры</h2>
-          <a class="text-link" href="photographers.php">Сбросить</a>
-        </div>
-        <?php if ($f['sort'] !== 'new'): ?><input type="hidden" name="sort" value="<?= e($f['sort']) ?>"><?php endif; ?>
-
-        <div class="field">
-          <label for="f-city">Город</label>
-          <span class="input input--select"><select id="f-city" name="city">
-            <?php foreach (cities() as $c): ?><option<?= $f['city'] === $c ? ' selected' : '' ?>><?= e($c) ?></option><?php endforeach; ?>
-          </select><?= icon('chevron', 'icon--sm') ?></span>
-        </div>
-
-        <fieldset class="field">
-          <legend>Жанр</legend>
-          <?php foreach (genres() as $slug => $label): ?>
-            <label class="check"><input type="checkbox" name="genre[]" value="<?= e($slug) ?>"<?= in_array($slug, $f['genres'], true) ? ' checked' : '' ?>><span class="check__box"><?= icon('check') ?></span><span><?= e($label) ?></span></label>
-          <?php endforeach; ?>
-        </fieldset>
-
-        <fieldset class="field">
-          <legend>Цена за час</legend>
-          <div class="range" data-range data-min="<?= PRICE_MIN ?>" data-max="<?= PRICE_MAX ?>">
-            <div class="range__track"><div class="range__fill"></div></div>
-            <input type="range" name="price_min" min="<?= PRICE_MIN ?>" max="<?= PRICE_MAX ?>" step="100" value="<?= $f['price_min'] ?>" aria-label="Цена от">
-            <input type="range" name="price_max" min="<?= PRICE_MIN ?>" max="<?= PRICE_MAX ?>" step="100" value="<?= $f['price_max'] ?>" aria-label="Цена до">
-          </div>
-          <div class="range__values mono"><output data-range-min><?= e(money($f['price_min'])) ?></output><output data-range-max><?= e(money($f['price_max'])) ?></output></div>
-          <?php if ($f['price_error']): ?><p class="field__error is-visible" role="alert">Нижняя цена не может быть больше верхней</p><?php endif; ?>
-        </fieldset>
-
-        <fieldset class="field">
-          <legend>Дополнительно</legend>
-          <label class="switch"><input type="checkbox" name="night" value="1"<?= $f['night'] ? ' checked' : '' ?>><span class="switch__track"></span><span>Ночная съёмка</span></label>
-          <label class="switch"><input type="checkbox" name="video" value="1"<?= $f['video'] ? ' checked' : '' ?>><span class="switch__track"></span><span>Видеосъёмка</span></label>
-          <label class="switch"><input type="checkbox" name="trip" value="1"<?= $f['trip'] ? ' checked' : '' ?>><span class="switch__track"></span><span>Выезд в район</span></label>
-        </fieldset>
-
-        <button type="submit" class="btn btn--primary btn--block" data-show-count>Показать <?= $total ?></button>
-        <a class="btn btn--ghost btn--block" href="photographers.php">Сбросить всё</a>
-      </form>
-
-      <div class="catalog__results">
-        <?php if ($total === 0): ?>
-          <div class="empty card">
-            <h2>Ничего не найдено</h2>
-            <p class="muted">Попробуйте изменить условия поиска.</p>
-            <a class="btn btn--primary" href="photographers.php">Сбросить всё</a>
-          </div>
-        <?php else: ?>
-          <div class="grid grid--2">
-            <?php foreach ($items as $p): ?><?= photographer_card($p) ?><?php endforeach; ?>
-          </div>
-          <?= pagination($page, $pages, 'photographers.php', $linkParams) ?>
-        <?php endif; ?>
-        <?= price_note() ?>
+        </select><?= icon('chevron') ?></div>
       </div>
-    </div>
+      <noscript><button class="btn btn--sm">Применить</button></noscript>
+    </form>
   </div>
 </section>
+
+<div class="cat">
+  <button type="button" class="filters-toggle" aria-expanded="false" aria-controls="filters"><?= icon('sliders') ?>Фильтры<?= $activeFilters ? ' · ' . $activeFilters : '' ?></button>
+
+  <form class="flt" id="filters" method="get" action="photographers.php" data-filters aria-label="Фильтры каталога">
+    <div class="flt__head"><h2>Фильтры</h2><button type="button" class="md__close" data-close-filters aria-label="Закрыть фильтры"><?= icon('x') ?></button></div>
+
+    <div class="field only-m">
+      <label for="f-sort"><small>Сортировка</small></label>
+      <div class="v v--select"><select id="f-sort" name="sort">
+        <?php foreach ($sorts as $k => $label): ?><option value="<?= $k ?>"<?= $f['sort'] === $k ? ' selected' : '' ?>><?= e($label) ?></option><?php endforeach; ?>
+      </select><?= icon('chevron') ?></div>
+    </div>
+
+    <div>
+      <h2><label for="f-city">Город</label></h2>
+      <div class="v v--select"><select id="f-city" name="city">
+        <?php foreach (cities() as $c): ?><option<?= $f['city'] === $c ? ' selected' : '' ?>><?= e($c) ?></option><?php endforeach; ?>
+      </select><?= icon('chevron') ?></div>
+    </div>
+
+    <fieldset class="field">
+      <h2>Жанр</h2>
+      <div class="gl">
+        <?php foreach (genres() as $slug => $label): ?>
+          <label class="chk"><input type="checkbox" name="genre[]" value="<?= e($slug) ?>"<?= in_array($slug, $f['genres'], true) ? ' checked' : '' ?>><s><?= icon('check') ?></s><span><?= e($label) ?></span></label>
+        <?php endforeach; ?>
+      </div>
+    </fieldset>
+
+    <fieldset class="field">
+      <h2>Цена за час</h2>
+      <div class="range" data-range data-min="<?= PRICE_MIN ?>" data-max="<?= PRICE_MAX ?>">
+        <div class="range__track"><div class="range__fill"></div></div>
+        <input type="range" name="price_min" min="<?= PRICE_MIN ?>" max="<?= PRICE_MAX ?>" step="100" value="<?= $f['price_min'] ?>" aria-label="Цена от">
+        <input type="range" name="price_max" min="<?= PRICE_MIN ?>" max="<?= PRICE_MAX ?>" step="100" value="<?= $f['price_max'] ?>" aria-label="Цена до">
+      </div>
+      <div class="range__values mono"><output data-range-min><?= e(money($f['price_min'])) ?></output><output data-range-max><?= e(money($f['price_max'])) ?></output></div>
+      <?php if ($f['price_error']): ?><p class="err" role="alert">Нижняя цена не может быть больше верхней</p><?php endif; ?>
+    </fieldset>
+
+    <fieldset class="field">
+      <h2>Дополнительно</h2>
+      <div class="gl">
+        <label class="tg"><input type="checkbox" name="night" value="1"<?= $f['night'] ? ' checked' : '' ?>><s></s><span>Ночная съёмка</span></label>
+        <label class="tg"><input type="checkbox" name="video" value="1"<?= $f['video'] ? ' checked' : '' ?>><s></s><span>Видеосъёмка</span></label>
+        <label class="tg"><input type="checkbox" name="trip" value="1"<?= $f['trip'] ? ' checked' : '' ?>><s></s><span>Выезд в район</span></label>
+      </div>
+    </fieldset>
+
+    <div style="display:grid;gap:10px">
+      <button type="submit" class="btn btn--primary btn--block" data-show-count>Показать <?= $total ?></button>
+      <a class="btn btn--block" href="photographers.php">Сбросить всё</a>
+    </div>
+  </form>
+
+  <div>
+    <?php if ($total === 0): ?>
+      <div class="empty">
+        <h2>Ничего не найдено</h2>
+        <p class="mt">Попробуйте изменить условия поиска.</p>
+        <a class="btn btn--primary" href="photographers.php">Сбросить всё</a>
+      </div>
+    <?php else: ?>
+      <div class="pcs">
+        <?php foreach ($items as $p): ?><?= photographer_card($p) ?><?php endforeach; ?>
+      </div>
+      <?= pagination($page, $pages, 'photographers.php', $linkParams) ?>
+    <?php endif; ?>
+    <?= price_note() ?>
+  </div>
+</div>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

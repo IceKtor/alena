@@ -24,42 +24,31 @@ page_start([
 require __DIR__ . '/partials/header.php';
 ?>
 
-<section class="section section--page">
-  <div class="container">
-    <div class="page-head">
-      <div>
-        <h1>Работы</h1>
-        <p class="muted">Лента обновляется ежедневно — самые новые публикации первыми.</p>
-      </div>
-      <!-- ЗАГЛУШКА: сортировка одна («Сначала новые»), остальные появятся с БД -->
-      <span class="input input--select input--pill"><select aria-label="Сортировка" disabled><option>Сначала новые</option></select><?= icon('chevron', 'icon--sm') ?></span>
+<section class="ph">
+  <h1>Работы</h1>
+  <p class="cnt">Лента обновляется ежедневно — новые кадры сверху.</p>
+</section>
+
+<nav class="filters-row" aria-label="Жанры">
+  <a class="tab<?= $genre === '' ? ' on' : '' ?>" href="works.php"<?= $genre === '' ? ' aria-current="true"' : '' ?>>Все</a>
+  <?php foreach ($genreMap as $slug => $label): ?>
+    <a class="tab<?= $genre === $slug ? ' on' : '' ?>" href="<?= e(url('works.php', ['genre' => $slug])) ?>"<?= $genre === $slug ? ' aria-current="true"' : '' ?>><?= e($label) ?></a>
+  <?php endforeach; ?>
+</nav>
+
+<div class="wrap">
+  <?php if (!$items): ?>
+    <div class="empty"><h2>Работ пока нет</h2><p class="mt">В этом жанре пока ничего не опубликовано.</p><a class="btn btn--primary" href="works.php">Показать все</a></div>
+  <?php else: ?>
+    <div class="mas">
+      <?php foreach ($items as $w): ?><?= work_figure($w, true, $w['hours_ago'] < 24) ?><?php endforeach; ?>
     </div>
-
-    <nav class="chips" aria-label="Жанры">
-      <a class="chip<?= $genre === '' ? ' chip--on' : '' ?>" href="works.php"<?= $genre === '' ? ' aria-current="true"' : '' ?>>Все</a>
-      <?php foreach ($genreMap as $slug => $label): ?>
-        <a class="chip<?= $genre === $slug ? ' chip--on' : '' ?>" href="<?= e(url('works.php', ['genre' => $slug])) ?>"<?= $genre === $slug ? ' aria-current="true"' : '' ?>><?= e($label) ?></a>
-      <?php endforeach; ?>
-    </nav>
-
-    <?php if (!$items): ?>
-      <div class="empty card"><h2>Работ пока нет</h2><p class="muted">В этом жанре пока ничего не опубликовано.</p><a class="btn btn--primary" href="works.php">Показать все</a></div>
-    <?php else: ?>
-      <div class="grid grid--3">
-        <?php foreach ($items as $w): ?><?= work_card($w, true, $w['hours_ago'] < 24, true) ?><?php endforeach; ?>
-      </div>
-      <?php if ($more): ?>
-        <div class="center"><a class="btn btn--ghost" href="<?= e(url('works.php', ['genre' => $genre, 'shown' => $shown + WORKS_PER_STEP])) ?>#after-<?= $shown ?>">Показать ещё</a></div>
-      <?php endif; ?>
+    <?php if ($more): ?>
+      <div class="center"><a class="btn" href="<?= e(url('works.php', ['genre' => $genre, 'shown' => $shown + WORKS_PER_STEP])) ?>">Показать ещё</a></div>
     <?php endif; ?>
-  </div>
-</section>
+  <?php endif; ?>
+</div>
 
-<section class="cta">
-  <div class="container cta__inner">
-    <h2>Хотите, чтобы вас увидели?</h2>
-    <button type="button" class="btn btn--dark btn--lg" data-open-modal="register">Создать профиль</button>
-  </div>
-</section>
+<?= cta_block('Хотите, чтобы вас <em>увидели?</em>', 'Профиль бесплатный, заводится за пару минут.') ?>
 
 <?php require __DIR__ . '/partials/footer.php'; ?>

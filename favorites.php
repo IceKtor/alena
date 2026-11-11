@@ -15,20 +15,21 @@ if (is_role(ROLE_CLIENT)) {
 }
 require __DIR__ . '/partials/header.php';
 ?>
-<section class="section section--page">
-  <div class="container">
-    <h1>Избранное</h1>
-    <?php if (!$user): ?>
-      <div class="card card--pad empty"><p class="muted">Войдите, чтобы видеть избранных фотографов.</p>
-        <button type="button" class="btn btn--primary" data-open-modal="login">Войти</button></div>
-    <?php elseif (!is_role(ROLE_CLIENT)): ?>
-      <div class="card card--pad empty"><p class="muted">Избранное доступно заказчикам.</p></div>
-    <?php elseif (!$list): ?>
-      <div class="card card--pad empty"><p class="muted">Пока никого нет. Нажмите «сердце» на карточке фотографа.</p>
-        <a class="btn btn--primary" href="photographers.php">Найти фотографа</a></div>
-    <?php else: ?>
-      <div class="grid grid--2"><?php foreach ($list as $p): ?><?= photographer_card($p) ?><?php endforeach; ?></div>
-    <?php endif; ?>
-  </div>
+<section class="ph">
+  <h1>Избранное</h1>
+  <p class="cnt">Фотографы, которых вы сохранили</p>
 </section>
+<div class="wrap" style="padding-top:40px">
+  <?php if (!$user): ?>
+    <div class="empty"><p class="mt">Войдите, чтобы видеть избранных фотографов.</p>
+      <button type="button" class="btn btn--primary" data-open-modal="login">Войти</button></div>
+  <?php elseif (!is_role(ROLE_CLIENT)): ?>
+    <div class="empty"><p class="mt">Избранное доступно заказчикам.</p></div>
+  <?php elseif (!$list): ?>
+    <div class="empty"><p class="mt">Пока никого нет. Нажмите «сердце» на карточке фотографа.</p>
+      <a class="btn btn--primary" href="photographers.php">Найти фотографа</a></div>
+  <?php else: ?>
+    <div class="pcs"><?php foreach ($list as $p): ?><?= photographer_card($p) ?><?php endforeach; ?></div>
+  <?php endif; ?>
+</div>
 <?php require __DIR__ . '/partials/footer.php'; ?>

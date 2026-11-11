@@ -53,6 +53,28 @@ function frame_no(int $id): string
     return sprintf('%02d%s', $id % 36 + 1, ['A', 'B', 'C'][$id % 3]);
 }
 
+/** Имя в дательном падеже для окна «Написать …»: «Алексей Петров» → «Алексею». */
+function dative_first_name(string $full): string
+{
+    $n = preg_split('/\s+/u', trim($full))[0] ?? $full;
+    $len = mb_strlen($n);
+    if ($len < 3) {
+        return $n;
+    }
+    $exceptions = ['Павел' => 'Павлу', 'Лев' => 'Льву']; // беглая гласная
+    if (isset($exceptions[$n])) {
+        return $exceptions[$n];
+    }
+    $last = mb_substr($n, -1);
+    $stem = mb_substr($n, 0, -1);
+    return match (true) {
+        mb_substr($n, -2) === 'ия' => $stem . 'и',
+        $last === 'й' || $last === 'ь' => $stem . 'ю',
+        $last === 'я' || $last === 'а' => $stem . 'е',
+        default => $n . 'у',
+    };
+}
+
 function genre_name(string $slug): string
 {
     return genres()[$slug] ?? $slug;
