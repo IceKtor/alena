@@ -9,7 +9,7 @@ function icon(string $name, string $class = ''): string
 
 function logo(): string
 {
-    return 'объектив<i>.</i>';
+    return 'Объектив';
 }
 
 /** Кнопка «сердце» (ФТ-13). Гостю предлагается войти. */
@@ -25,12 +25,12 @@ function fav_button(int $photographerId, string $label = 'В избранное'
 /** Работа в мозаике (главная, лента): номер кадра, название, жанр и автор. */
 function work_figure(array $w, bool $showTime = false, bool $isNew = false): string
 {
-    $meta = genre_name($w['genre']) . ' · ' . $w['author'] . ($showTime ? ' · ' . time_ago($w['hours_ago']) : '');
+    $meta = $w['author'] . ', ' . mb_strtolower(genre_name($w['genre'])) . ($showTime ? ', ' . time_ago($w['hours_ago']) : '');
     return '<figure><a href="' . e(url('photographer.php', ['id' => $w['author_id']])) . '">'
         . img_tag($w['file'], $w['title'] . ' — ' . $w['author'])
-        . '<figcaption><span class="fno">' . e(frame_no((int) $w['id'])) . '</span><span><b>' . e($w['title']) . '</b>'
+        . '<figcaption><b>' . e($w['title']) . '</b>'
         . ($isNew ? '<span class="badge">Новое</span>' : '')
-        . '<br><span class="mt">' . e($meta) . '</span></span></figcaption></a></figure>';
+        . '<br><span class="mt">' . e($meta) . '</span></figcaption></a></figure>';
 }
 
 /** Строка фотографа в списке на главной. */
@@ -42,9 +42,9 @@ function photographer_row(array $p, int $i): string
         $th .= '<img src="' . e(photo_url($catalog[$key]['file'])) . '" alt="" width="56" height="56" loading="lazy">';
     }
     return '<a class="row" href="' . e(url('photographer.php', ['id' => $p['id']])) . '">'
-        . '<span class="no">' . sprintf('%02d', $i) . '</span><span class="nm">' . e($p['name']) . '</span>'
+        . '<span class="nm">' . e($p['name']) . '</span>'
         . '<span class="gn">' . e(genre_names($p['genres'])) . '</span><span class="ct">' . e($p['city']) . '</span>'
-        . '<span class="pr">от ' . e(money($p['price'])) . ' / час</span><span class="th">' . $th . '</span></a>';
+        . '<span class="pr">от ' . e(money($p['price'])) . ' в час</span><span class="th">' . $th . '</span></a>';
 }
 
 /** Карточка фотографа в каталоге (ФТ-02): коллаж из трёх работ, имя, жанры, город и цена. */
@@ -61,7 +61,7 @@ function photographer_card(array $p): string
         . '<button type="button" class="icon-btn" data-open-request data-id="' . $p['id'] . '" data-name="' . e($p['name']) . '" data-dative="' . e(dative_first_name($p['name'])) . '" data-avatar="' . e(photo_url($p['avatar'])) . '" aria-label="Написать фотографу ' . e($p['name']) . '">' . icon('mail') . '</button>'
         . fav_button($p['id'], 'Добавить ' . $p['name'] . ' в избранное') . '</span></h3>'
         . '<p class="pc__genres">' . e(genre_names($p['genres'])) . '</p>'
-        . '<div class="pc__meta"><span>' . e($p['city']) . '</span><span class="mono">от ' . e(money($p['price'])) . ' / час</span></div></article>';
+        . '<div class="pc__meta"><span>' . e($p['city']) . '</span><span class="pr">от ' . e(money($p['price'])) . ' в час</span></div></article>';
 }
 
 /** Пагинация (ФТ-04). */
@@ -91,7 +91,7 @@ function pagination(int $page, int $pages, string $base, array $params): string
         $prev = $i;
     }
     if ($page < $pages) {
-        $html .= '<a class="pg__next" href="' . e(url($base, array_merge($params, ['page' => $page + 1]))) . '">Далее →</a>';
+        $html .= '<a class="pg__next" href="' . e(url($base, array_merge($params, ['page' => $page + 1]))) . '">Дальше</a>';
     }
     return $html . '</nav>';
 }
@@ -103,7 +103,7 @@ function price_note(): string
 }
 
 /** Призыв к действию внизу страниц. */
-function cta_block(string $title = 'Снимаете? <em>Покажите, что умеете.</em>', string $text = 'Профиль бесплатный, заводится за пару минут. Заявки собираются в личном кабинете.'): string
+function cta_block(string $title = 'Снимаете? Покажите работы заказчикам.', string $text = 'Профиль бесплатный, заводится за пару минут. Заявки приходят в личный кабинет.'): string
 {
     return '<section class="cta"><div><h2>' . $title . '</h2><p>' . e($text) . '</p></div>'
         . '<button type="button" class="btn btn--primary btn--lg" data-open-modal="register">Создать профиль</button></section>';

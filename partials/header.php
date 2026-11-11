@@ -20,12 +20,12 @@ $title = $pg['title'] === APP_NAME ? APP_NAME : $pg['title'] . ' — ' . APP_NAM
   <?php if ($pg['noindex']): ?><meta name="robots" content="noindex, nofollow"><?php endif; ?>
   <?php if ($pg['canonical']): ?><link rel="canonical" href="<?= e($pg['canonical']) ?>"><?php endif; ?>
   <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
-  <meta name="theme-color" content="#0F0F0E">
+  <meta name="theme-color" content="#ECEFF1">
   <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
-  <!-- Шрифты: Cormorant Garamond (заголовки), Inter (текст), IBM Plex Mono (цены и номера кадров). Источник: Google Fonts. -->
+  <!-- Шрифт один: Fira Sans (заголовки — Extra Condensed). Источник: Google Fonts. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:wght@600;700;800&family=Fira+Sans:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/app.js" defer></script>
 </head>
@@ -33,7 +33,7 @@ $title = $pg['title'] === APP_NAME ? APP_NAME : $pg['title'] . ' — ' . APP_NAM
 <?php require __DIR__ . '/icons.php'; ?>
 <a class="skip-link" href="#main">К содержимому</a>
 
-<header class="hd<?= !empty($pg['over']) ? ' over' : '' ?>" id="site-header">
+<header class="hd" id="site-header">
   <a class="logo" href="index.php" aria-label="<?= e(APP_NAME) ?> — на главную"><?= logo() ?></a>
 
   <button type="button" class="burger menu-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="Открыть меню">
@@ -43,7 +43,7 @@ $title = $pg['title'] === APP_NAME ? APP_NAME : $pg['title'] . ' — ' . APP_NAM
   <div class="hd-panel site-header__panel" id="site-nav">
     <nav class="nav" aria-label="Основное меню">
       <?php foreach ($nav as $key => [$href, $label]): ?>
-        <a href="<?= e($href) ?>" class="up<?= $pg['nav'] === $key ? ' on' : '' ?>"<?= $pg['nav'] === $key ? ' aria-current="page"' : '' ?>><?= e($label) ?></a>
+        <a href="<?= e($href) ?>"<?= $pg['nav'] === $key ? ' class="on"' : '' ?><?= $pg['nav'] === $key ? ' aria-current="page"' : '' ?>><?= e($label) ?></a>
       <?php endforeach; ?>
     </nav>
 
@@ -69,8 +69,8 @@ $title = $pg['title'] === APP_NAME ? APP_NAME : $pg['title'] . ' — ' . APP_NAM
           </div>
         </div>
       <?php else: ?>
-        <button type="button" class="link-btn up" data-open-modal="login">Войти</button>
-        <button type="button" class="link-btn up uor" data-open-modal="register">Разместить портфолио →</button>
+        <button type="button" class="link-btn" data-open-modal="login">Войти</button>
+        <button type="button" class="btn btn--primary btn--sm hl" data-open-modal="register">Разместить портфолио</button>
       <?php endif; ?>
     </div>
   </div>

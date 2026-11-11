@@ -75,6 +75,19 @@ function dative_first_name(string $full): string
     };
 }
 
+/** «в Якутске», «в Мирном»… для фразы-поиска на главной. */
+function city_in(string $city): string
+{
+    return 'в ' . (['Якутск' => 'Якутске', 'Мирный' => 'Мирном', 'Нерюнгри' => 'Нерюнгри', 'Покровск' => 'Покровске'][$city] ?? $city);
+}
+
+/** «для портрета»… для фразы-поиска на главной. */
+function genre_for(string $slug): string
+{
+    return 'для ' . (['portrait' => 'портрета', 'landscape' => 'пейзажа', 'reportage' => 'репортажа', 'still' => 'предметной съёмки',
+        'wedding' => 'свадьбы', 'family' => 'семейной съёмки', 'lovestory' => 'Love Story'][$slug] ?? $slug);
+}
+
 function genre_name(string $slug): string
 {
     return genres()[$slug] ?? $slug;
