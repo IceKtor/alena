@@ -162,9 +162,15 @@
       clearErrors(form);
       if (!clientValidate(form)) return;
       var btn = $('[type=submit]', form);
+      // Состояние загрузки: кнопка заблокирована и говорит, что происходит (UI UX Pro Max: Loading Buttons)
+      var label = btn.textContent;
       btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
+      btn.textContent = 'Отправляем…';
       post(form.getAttribute('data-api'), new FormData(form)).then(function (res) {
         btn.disabled = false;
+        btn.removeAttribute('aria-busy');
+        btn.textContent = label;
         if (res.ok) {
           var dlg = form.closest('dialog'); if (dlg) dlg.close();
           if (res.message) toast(res.message);

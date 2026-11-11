@@ -191,7 +191,7 @@ $genreSelect = function (string $id) use ($genreOptions): string {
 <dialog class="lightbox" id="lightbox" aria-label="Просмотр фото">
   <figure>
     <div class="lightbox__top"><span class="mono mt" style="font-size:13px">Просмотр</span><button type="button" class="md__close" data-close-modal aria-label="Закрыть"><?= icon('x') ?></button></div>
-    <img src="" alt="">
+    <img src="" alt="" width="1200" height="800">
     <figcaption></figcaption>
   </figure>
 </dialog>

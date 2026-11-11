@@ -7,7 +7,7 @@
    ========================================================================== */
 :root{
   --bg:#0F0F0E; --s1:#171715; --s2:#1F1F1C; --line:#34332F; --line2:#55534C;
-  --tx:#ECEBE6; --mt:#A09E96; --ft:#79776F;
+  --tx:#ECEBE6; --mt:#A09E96; --ft:#8C8A82; /* --ft осветлён до 5,3:1 (норма WCAG 4,5:1) */
   --or:#E8743B; --or2:#F0A874; --amber:#F5B83D; --red:#E5604F; --ok:#5DBB9E;
   --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
@@ -36,16 +36,16 @@ p{text-wrap:pretty}
 .ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .icon--sm{width:16px;height:16px}
 :focus-visible{outline:none;box-shadow:var(--focus);border-radius:2px}
-.skip-link{position:absolute;left:16px;top:-60px;z-index:100;background:var(--or);color:#0F0F0E;padding:10px 16px;transition:top .15s}
+.skip-link{position:absolute;left:16px;top:-60px;z-index:100;min-height:44px;display:inline-flex;align-items:center;background:var(--or);color:#0F0F0E;padding:10px 16px;transition:top .15s}
 .skip-link:focus{top:0}
-.fno{font:11.5px var(--mono);color:var(--or);letter-spacing:.04em}
+.fno{font:12px var(--mono);color:var(--or);letter-spacing:.04em}
 .note{color:var(--ft);font-size:12.5px;margin-top:12px}
 .center{text-align:center;margin-top:34px}
 
 /* шапка */
 .hd{position:relative;z-index:30;height:84px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 var(--pad);border-bottom:1px solid var(--line);background:var(--bg)}
 .hd.over{position:absolute;left:0;right:0;top:0;background:transparent;border-bottom:0}
-.logo{font:500 28px var(--serif);letter-spacing:.01em;white-space:nowrap}
+.logo{font:500 28px var(--serif);letter-spacing:.01em;white-space:nowrap;display:inline-flex;align-items:center;min-height:44px}
 .logo i{color:var(--or);font-style:normal}
 .hd-panel{display:flex;flex:1;align-items:center;justify-content:space-between;gap:24px}
 .nav{display:flex;gap:34px;margin-left:clamp(0px,4vw,64px)}
@@ -54,7 +54,7 @@ p{text-wrap:pretty}
 .nav a.on{border-color:var(--tx)}
 .hd-r{display:flex;gap:30px;align-items:center}
 .link-btn{background:none;border:0;padding:0;color:var(--tx)}
-.burger{display:none;background:none;border:0;padding:8px;margin-right:-8px;color:var(--tx)}
+.burger{display:none;background:none;border:0;padding:12px;margin-right:-12px;color:var(--tx);min-width:44px;min-height:44px;align-items:center;justify-content:center}
 .bell{position:relative;display:flex;color:var(--tx)}
 .bell b{position:absolute;right:-1px;top:-1px;width:8px;height:8px;border-radius:50%;background:var(--or)}
 .user-menu{position:relative}
@@ -76,21 +76,21 @@ p{text-wrap:pretty}
 .btn--block{width:100%}
 .btn[disabled]{opacity:.55;cursor:progress}
 .text-link{background:none;border:0;padding:0;color:var(--tx);text-decoration:underline;text-decoration-color:var(--or);text-underline-offset:4px}
-.icon-btn{display:inline-grid;place-items:center;width:40px;height:40px;padding:0;background:none;border:0;border-radius:50%;color:var(--mt)}
+.icon-btn{display:inline-grid;place-items:center;width:44px;height:44px;padding:0;background:none;border:0;border-radius:50%;color:var(--mt)}
 .icon-btn:hover{color:var(--tx)}
 .fav-btn.is-on{color:var(--or)} .fav-btn.is-on .ico{fill:var(--or)}
 
 /* поля (настоящие элементы форм в стиле макета) */
 .form{display:grid;gap:22px}
 .field{display:block;border:0;padding:0;margin:0;min-width:0}
-.field small,.field>legend,.field .lbl{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mt);margin-bottom:6px;padding:0}
+.field small,.field>legend,.field .lbl{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mt);margin-bottom:6px;padding:0}
 .field>label:not(.chk):not(.tg):not(.btn),.field__row>label{display:block}
 .field__row{display:flex;justify-content:space-between;align-items:baseline}
 .field__row .text-link{font-size:13px;color:var(--mt)}
 .v{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;min-height:44px;border-bottom:1px solid var(--line2)}
 .v:focus-within{border-color:var(--or)}
 .v.is-invalid{border-color:var(--red)}
-.v input,.v select,.v textarea{flex:1;min-width:0;background:none;border:0;outline:none;padding:10px 0;font-size:16px;color:var(--tx);box-shadow:none;border-radius:0}
+.v input,.v select,.v textarea{flex:1;min-width:0;min-height:44px;background:none;border:0;outline:none;padding:10px 0;font-size:16px;color:var(--tx);box-shadow:none;border-radius:0}
 .v input::placeholder,.v textarea::placeholder{color:var(--ft)}
 .v input[type=date]{color-scheme:dark}
 .v select{appearance:none;cursor:pointer;padding-right:24px}
@@ -127,7 +127,7 @@ p{text-wrap:pretty}
 .tag--new i{background:var(--or)} .tag--viewed i{background:var(--amber)} .tag--done i{background:var(--ok)}
 .chip{display:inline-flex;align-items:center;padding:0;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mt)}
 a.chip:hover{color:var(--tx)}
-.badge{font:500 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;background:var(--amber);color:#0F0F0E;padding:3px 9px}
+.badge{font:500 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;background:var(--amber);color:#0F0F0E;padding:3px 9px}
 
 /* главная */
 .hero{position:relative;height:760px;display:flex;align-items:flex-end}
@@ -504,5 +504,15 @@ a.chip:hover{color:var(--tx)}
   .form-row.keep{grid-template-columns:1fr 1fr}
   .lightbox figure{padding:18px var(--pad) 24px}
   .prose h1{font-size:44px}
+}
+/* Цели касания не меньше 44×44 px на сенсорных экранах (UI UX Pro Max: Touch Target Size) */
+@media (max-width:960px){
+  .pg a{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+  .pf__meta{row-gap:0}
+  .pf__meta .chip,.crumb-back{min-height:44px;display:inline-flex;align-items:center}
+  .chk,.tg{min-height:44px}
+  .tab{min-width:44px;text-align:center;flex:none}
+  .pc__name a,.row .nm{display:inline-flex;align-items:center;min-height:44px}
+  .text-link{min-height:44px;display:inline-flex;align-items:center}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
