@@ -19,8 +19,12 @@
     toastTimer = setTimeout(function () { t.hidden = true; }, 4200);
   }
 
+  /* Статическая демо-копия (GitHub Pages): PHP там не работает, формы не отправляются */
+  var STATIC = document.documentElement.hasAttribute('data-static');
+
   /* ── Запросы к серверу ── */
   function post(url, body) {
+    if (STATIC) return Promise.resolve({ ok: false, error: 'Это демо-копия на GitHub Pages: формы работают только на PHP-сервере (например, Open Server).' });
     var opts = { method: 'POST', headers: { 'X-CSRF-Token': csrf, 'Accept': 'application/json' }, credentials: 'same-origin' };
     opts.body = body instanceof FormData ? body : new URLSearchParams(body);
     return fetch(url, opts).then(function (r) {
@@ -53,7 +57,7 @@
   }
   $$('[data-logout]').forEach(function (b) {
     b.addEventListener('click', function () {
-      post('server/api/logout.php', {}).then(function () { location.href = 'index.php'; });
+      post('server/api/logout.php', {}).then(function () { location.href = STATIC ? 'index.html' : 'index.php'; });
     });
   });
 
@@ -244,6 +248,7 @@
   if (filters) {
     var countBtn = $('[data-show-count]', filters), found = $('[data-found]'), t;
     var refresh = function () {
+      if (STATIC) return;
       var p = new URLSearchParams(new FormData(filters)); p.set('format', 'count');
       fetch('photographers.php?' + p.toString(), { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (j) {
         countBtn.textContent = j.label;
