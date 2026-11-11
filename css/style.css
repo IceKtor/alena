@@ -11,7 +11,7 @@
   --or:#E8743B; --or2:#F0A874; --amber:#F5B83D; --red:#E5604F; --ok:#5DBB9E;
   --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
   --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
-  --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+  --mono:var(--sans); /* моноширинный шрифт убран: цены и числа — Inter с цифрами одной ширины */
   --pad:56px;
   --focus:0 0 0 2px var(--bg),0 0 0 4px var(--or2);
 }
@@ -30,8 +30,8 @@ p{text-wrap:pretty}
 .mt{color:var(--mt)} .ft{color:var(--ft)} .mono{font-family:var(--mono)}
 .sr-only{position:absolute!important;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;padding:0}
 .wrap{padding:0 var(--pad)}
-.up{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase}
-.nav a{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase}
+.up{font-size:15px}
+.nav a{font-size:15px}
 .uor{border-bottom:1px solid var(--or);padding-bottom:4px}
 .ico{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .icon--sm{width:16px;height:16px}
@@ -67,7 +67,7 @@ p{text-wrap:pretty}
 .user-menu__list a:hover,.user-menu__list button:hover{background:var(--s2)}
 
 /* кнопки */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 28px;border:1px solid var(--tx);background:none;color:var(--tx);font:500 12.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;border-radius:2px;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:48px;padding:0 28px;border:1px solid var(--tx);background:none;color:var(--tx);font:500 12.5px var(--sans);border-radius:2px;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
 .btn:hover{background:var(--tx);color:#0F0F0E}
 .btn--primary{background:var(--or);border-color:var(--or);color:#0F0F0E}
 .btn--primary:hover{background:var(--or2);border-color:var(--or2)}
@@ -83,7 +83,7 @@ p{text-wrap:pretty}
 /* поля (настоящие элементы форм в стиле макета) */
 .form{display:grid;gap:22px}
 .field{display:block;border:0;padding:0;margin:0;min-width:0}
-.field small,.field>legend,.field .lbl{display:block;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mt);margin-bottom:6px;padding:0}
+.field small,.field>legend,.field .lbl{display:block;font-size:12px;color:var(--mt);margin-bottom:6px;padding:0}
 .field>label:not(.chk):not(.tg):not(.btn),.field__row>label{display:block}
 .field__row{display:flex;justify-content:space-between;align-items:baseline}
 .field__row .text-link{font-size:13px;color:var(--mt)}
@@ -117,17 +117,17 @@ p{text-wrap:pretty}
 .tg s::after{content:"";position:absolute;top:3px;left:3px;width:14px;height:14px;border-radius:50%;background:var(--mt);transition:left .15s}
 .tg input:checked+s{background:var(--or);border-color:var(--or)}
 .tg input:checked+s::after{left:21px;background:#0F0F0E}
-.tab{font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mt);padding:14px 0;border-bottom:1px solid transparent;white-space:nowrap;background:none;border-top:0;border-left:0;border-right:0;border-radius:0}
+.tab{font-size:12.5px;color:var(--mt);padding:14px 0;border-bottom:1px solid transparent;white-space:nowrap;background:none;border-top:0;border-left:0;border-right:0;border-radius:0}
 .tab:hover{color:var(--tx)}
 .tab.on,.tab[aria-selected=true]{color:var(--tx);border-bottom-color:var(--tx)}
 .tabs{display:flex;gap:30px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tag{display:inline-flex;align-items:center;gap:7px;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:12px}
 .tag i{width:7px;height:7px;border-radius:50%;display:block}
 .tag--new i{background:var(--or)} .tag--viewed i{background:var(--amber)} .tag--done i{background:var(--ok)}
-.chip{display:inline-flex;align-items:center;padding:0;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mt)}
+.chip{display:inline-flex;align-items:center;padding:0;font-size:12px;color:var(--mt)}
 a.chip:hover{color:var(--tx)}
-.badge{font:500 12px var(--sans);letter-spacing:.1em;text-transform:uppercase;background:var(--amber);color:#0F0F0E;padding:3px 9px}
+.badge{font:500 12px var(--sans);background:var(--amber);color:#0F0F0E;padding:3px 9px}
 
 /* главная */
 .hero{position:relative;height:760px;display:flex;align-items:flex-end}
@@ -170,7 +170,7 @@ a.chip:hover{color:var(--tx)}
 /* подвал */
 .site-footer{margin-top:110px;border-top:1px solid var(--line)}
 .site-footer__grid{padding:44px var(--pad) 40px;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:32px;font-size:14px}
-.site-footer__title{font:500 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mt);margin-bottom:14px}
+.site-footer__title{font:500 12px var(--sans);color:var(--mt);margin-bottom:14px}
 .site-footer li{margin-bottom:9px}
 .site-footer li a:hover,.footer-link:hover{color:var(--or2)}
 .footer-link{background:none;border:0;padding:0;color:inherit;text-align:left}
@@ -186,7 +186,7 @@ a.chip:hover{color:var(--tx)}
 .sort{width:240px}
 .cat{display:grid;grid-template-columns:260px 1fr;gap:56px;padding:44px var(--pad) 0;align-items:start}
 .flt{display:grid;gap:30px}
-.flt h2{font:500 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mt);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.flt h2{font:500 12px var(--sans);color:var(--mt);margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .flt .gl{display:grid;gap:12px}
 .flt__head{display:none}
 .only-m{display:none}
@@ -213,7 +213,7 @@ a.chip:hover{color:var(--tx)}
 .pg{display:flex;justify-content:center;gap:26px;align-items:center;margin-top:70px;font:14px var(--mono);color:var(--mt);flex-wrap:wrap}
 .pg a.is-current{color:var(--tx);border-bottom:1px solid var(--or);padding-bottom:3px}
 .pg a:hover{color:var(--tx)}
-.pg .pg__next{font:500 12.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--tx)}
+.pg .pg__next{font:500 12.5px var(--sans);color:var(--tx)}
 .empty{text-align:center;display:grid;gap:14px;justify-items:center;padding:60px 20px;border:1px solid var(--line)}
 .empty h1,.empty h2{font-size:44px}
 
@@ -236,7 +236,7 @@ a.chip:hover{color:var(--tx)}
 .pf-tabs .tabs{gap:36px}
 .pbody{display:grid;grid-template-columns:1fr 340px;gap:48px;padding:36px var(--pad) 0;align-items:start}
 .pbody .mas{column-count:3}
-.side h2{font:500 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mt);padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.side h2{font:500 12px var(--sans);color:var(--mt);padding-bottom:12px;border-bottom:1px solid var(--line);margin-bottom:6px}
 .side section{margin-bottom:38px}
 .pl li{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
 .pl li .mono{font-size:13px}
@@ -333,7 +333,7 @@ a.chip:hover{color:var(--tx)}
 .md__close{position:absolute;right:18px;top:18px;width:36px;height:36px;border:1px solid var(--line2);border-radius:50%;background:none;display:flex;align-items:center;justify-content:center;color:var(--tx);padding:0}
 .md__close:hover{border-color:var(--tx)}
 .md__close .ico{width:16px;height:16px}
-.or{display:flex;align-items:center;gap:14px;color:var(--ft);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0}
+.or{display:flex;align-items:center;gap:14px;color:var(--ft);font-size:12px;margin:0}
 .or::before,.or::after{content:"";flex:1;height:1px;background:var(--line2)}
 .sw{text-align:center;color:var(--mt);font-size:14px}
 .sw .text-link{color:var(--tx)}
@@ -367,6 +367,79 @@ a.chip:hover{color:var(--tx)}
 .toast.is-error{border-color:var(--red);color:#FFD6CF}
 
 /* ───── мобильная версия ───── */
+
+/* ══════════ Чистка деталей: два голоса вместо пяти ══════════
+   Cormorant — имена и заголовки, Inter — всё остальное. Без капса с разрядкой,
+   без моноширинного шрифта, без курсива другого цвета. Оранжевый — только
+   главное действие и выбранное значение. Всё выровнено по левому краю. */
+body{font-variant-numeric:tabular-nums}
+.nav{gap:30px;align-items:center}
+.nav a,.hd-r .link-btn{font-size:15px;line-height:1.4;padding:6px 0;border-bottom:1px solid transparent}
+.hd-r .link-btn:hover{border-color:var(--line2)}
+.btn{font-size:15px;font-weight:500}
+.btn--sm{font-size:14px}
+.field small,.field>legend,.field .lbl{font-size:13px}
+.tab{font-size:15px}
+.tag{font-size:13px}
+.badge{font-size:12px;padding:2px 8px;margin-left:8px;vertical-align:1px}
+.pr{font-weight:500}
+.center{text-align:left}
+/* первый экран */
+.hero .dim{background:linear-gradient(180deg,rgba(10,10,9,.5) 0%,rgba(10,10,9,.35) 30%,rgba(10,10,9,.86) 100%)}
+.hc{grid-template-columns:1fr}
+.hc h1{font-size:96px;line-height:1;margin-bottom:22px;max-width:14em}
+.hc .lead{font-size:17px;max-width:46ch;margin-bottom:44px;color:#D8D6CF}
+.sline .v select{font:400 17px var(--sans)}
+.sec .sub{font-size:15px}
+.sec__head .text-link{font-size:15px}
+/* лента работ: ряды слева направо, ширина снимка — по его пропорции */
+.mas{column-count:auto;display:flex;flex-wrap:wrap;gap:30px 16px}
+.mas::after{content:"";flex-grow:999}
+.mas figure{flex:calc(var(--r,1.4) * 100) 1 calc(var(--r,1.4) * 230px);margin:0;min-width:0}
+.mas img{width:100%;height:auto;aspect-ratio:var(--r,1.4);object-fit:cover}
+.mas figcaption{display:block;font-size:14px;margin-top:10px;line-height:1.4}
+.mas figcaption b{font-weight:500}
+.mas figcaption .mt{display:block}
+.pbody .mas figure{flex-basis:calc(var(--r,1.4) * 190px)}
+/* фотографы на главной: работы крупнее имени */
+.row{grid-template-columns:minmax(240px,1fr) 2fr;gap:40px;padding:28px 0;align-items:center}
+.row:hover .nm{color:var(--tx);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:7px}
+.row__who{display:grid;gap:6px;align-content:center}
+.row .gn{font-size:15px}
+.row .pr{font-size:15px;color:var(--tx)}
+.row .th{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.row .th img{width:100%;height:150px;object-fit:cover}
+/* призыв и подвал: без рамок, по левому краю */
+.cta{border:0;display:block;margin-top:120px;padding:0}
+.cta h2{font-size:64px;max-width:15em}
+.cta p{font-size:16px;margin:14px 0 28px}
+.site-footer{margin-top:120px}
+.site-footer__title{font-size:14px}
+/* каталог */
+.flt{gap:30px}
+.flt h2{font-size:15px;font-weight:500;color:var(--tx);border:0;padding:0;margin-bottom:12px}
+.ph__row .sort{display:none}
+.range__values{font-size:14px}
+.pc__name{margin-top:16px}
+.pc__meta{align-items:center;border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+.pc__meta .pr{font-size:15px}
+.pc__actions{display:flex;gap:6px;align-items:center}
+.icon-btn{color:var(--tx)}
+.pg{font:15px var(--sans);gap:20px}
+.pg .pg__next{font-size:15px}
+/* профиль: один левый край для аватара, имени и вкладок */
+.pf{grid-template-columns:1fr auto;gap:40px;align-items:end}
+.pf__info{padding-top:0}
+.pf .avatar--xl{display:block;margin:-75px 0 22px}
+.pf__meta{font-size:16px;gap:6px 24px}
+.pf__meta .genres a{color:var(--tx);text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:4px}
+.pf__meta .genres a:hover{text-decoration-color:var(--tx)}
+.pf__cta{padding:0 0 6px;justify-items:end}
+.pf__buttons{display:flex;gap:10px;align-items:center}
+.pf__cta .pr{font-size:15px;color:var(--mt)}
+.side h2{font:400 32px var(--serif);color:var(--tx);border:0;padding:0;margin-bottom:6px}
+.dt{font:500 14px var(--sans)}
+
 @media (max-width:1100px){
   .pbody{grid-template-columns:1fr}
   .side{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
@@ -401,7 +474,7 @@ a.chip:hover{color:var(--tx)}
   .sline .field{flex:1 1 160px;min-width:0}
   .sline .btn{width:100%}
   .cat{grid-template-columns:1fr;display:block}
-  .filters-toggle{display:flex;width:100%;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:22px 0 28px;height:48px;align-items:center;justify-content:center;background:none;border-left:0;border-right:0;color:var(--tx);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase}
+  .filters-toggle{display:flex;width:100%;gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:22px 0 28px;height:48px;align-items:center;justify-content:center;background:none;border-left:0;border-right:0;color:var(--tx);font-size:15px}
   .filters-toggle .ico{margin-right:9px}
   .flt{display:none;position:fixed;left:0;right:0;bottom:0;z-index:60;max-height:92dvh;overflow:auto;background:var(--s1);border-top:1px solid var(--line2);border-radius:16px 16px 0 0;padding:20px 20px 28px}
   .flt.is-open{display:grid}
@@ -514,5 +587,23 @@ a.chip:hover{color:var(--tx)}
   .tab{min-width:44px;text-align:center;flex:none}
   .pc__name a,.row .nm{display:inline-flex;align-items:center;min-height:44px}
   .text-link{min-height:44px;display:inline-flex;align-items:center}
+  .btn--sm{height:44px}
+  .pf__meta .genres a{display:inline-block;padding:12px 0}
+}
+.flt .field>label small{font-size:15px;font-weight:500;color:var(--tx);margin-bottom:6px}
+/* мобильная версия: ряды ленты уже, вкладки показывают, что их можно прокрутить */
+@media (max-width:760px){
+  .hero .dim{background:linear-gradient(180deg,rgba(10,10,9,.62) 0%,rgba(10,10,9,.72) 40%,rgba(10,10,9,.9) 100%)}
+  .hc h1{font-size:46px}
+  .hc .lead{font-size:16px}
+  .mas{gap:22px 10px}
+  .mas figure{flex-basis:calc(var(--r,1.4) * 120px)}
+  .pbody .mas figure{flex-basis:calc(var(--r,1.4) * 120px)}
+  .row .th{grid-template-columns:repeat(4,1fr);max-width:none}
+  .row .th img{height:72px}
+  .cta{margin-top:72px}
+  .cta h2{font-size:40px}
+  .pf-tabs .tabs,.filters-row{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
+  .pc__meta .btn{padding:0 14px}
 }
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}

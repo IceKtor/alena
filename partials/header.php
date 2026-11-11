@@ -25,7 +25,7 @@ $title = $pg['title'] === APP_NAME ? APP_NAME : $pg['title'] . ' — ' . APP_NAM
   <!-- Шрифты: Cormorant Garamond (заголовки), Inter (текст), IBM Plex Mono (цены и номера кадров). Источник: Google Fonts. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500;600&display=swap">
   <link rel="stylesheet" href="css/style.css">
   <script src="js/app.js" defer></script>
 </head>
@@ -43,7 +43,7 @@ $title = $pg['title'] === APP_NAME ? APP_NAME : $pg['title'] . ' — ' . APP_NAM
   <div class="hd-panel site-header__panel" id="site-nav">
     <nav class="nav" aria-label="Основное меню">
       <?php foreach ($nav as $key => [$href, $label]): ?>
-        <a href="<?= e($href) ?>" class="up<?= $pg['nav'] === $key ? ' on' : '' ?>"<?= $pg['nav'] === $key ? ' aria-current="page"' : '' ?>><?= e($label) ?></a>
+        <a href="<?= e($href) ?>"<?= $pg['nav'] === $key ? ' class="on"' : '' ?><?= $pg['nav'] === $key ? ' aria-current="page"' : '' ?>><?= e($label) ?></a>
       <?php endforeach; ?>
     </nav>
 
@@ -69,8 +69,8 @@ $title = $pg['title'] === APP_NAME ? APP_NAME : $pg['title'] . ' — ' . APP_NAM
           </div>
         </div>
       <?php else: ?>
-        <button type="button" class="link-btn up" data-open-modal="login">Войти</button>
-        <button type="button" class="link-btn up uor" data-open-modal="register">Разместить портфолио →</button>
+        <button type="button" class="link-btn" data-open-modal="login">Войти</button>
+        <button type="button" class="btn btn--sm" data-open-modal="register">Разместить портфолио</button>
       <?php endif; ?>
     </div>
   </div>

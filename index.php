@@ -10,7 +10,13 @@ page_start([
     'body_class'  => 'home',
 ]);
 
-$fresh  = array_slice(all_works(), 0, 12);
+// Без повторов одного и того же снимка в подборке (в тестовых данных фото повторяются)
+$fresh = []; $seen = [];
+foreach (all_works() as $w) {
+    if (isset($seen[$w['file']])) continue;
+    $seen[$w['file']] = true; $fresh[] = $w;
+    if (count($fresh) === 10) break;
+}
 $genres = genres();
 $people = array_slice(photographers(), 0, 6);
 require __DIR__ . '/partials/header.php';
@@ -20,7 +26,7 @@ require __DIR__ . '/partials/header.php';
   <img src="<?= e(photo_url('road.jpg')) ?>" alt="" width="1378" height="832">
   <div class="dim"></div>
   <div class="hc">
-    <h1>Фотографы Якутии — <em>по их кадрам</em></h1>
+    <h1>Фотографы Якутии.<br>Выбирайте по кадрам</h1>
     <p class="lead">Смотрите работы, сравнивайте цены и пишите фотографу напрямую. Если снимаете сами — заведите страницу, это бесплатно.</p>
 
     <!-- Быстрый поиск (ФТ-01) → каталог с выбранными условиями -->
@@ -51,21 +57,19 @@ require __DIR__ . '/partials/header.php';
 </section>
 
 <section class="sec">
-  <h2>Свежие кадры</h2>
-  <p class="sub">Последние публикации, новые сверху</p>
+  <div class="sec__head"><h2>Свежие кадры</h2><a class="text-link" href="works.php">Все работы</a></div>
+  <p class="sub">Последние публикации, новые слева направо.</p>
   <div class="mas">
     <?php foreach ($fresh as $w): ?><?= work_figure($w) ?><?php endforeach; ?>
   </div>
-  <div class="center"><a class="btn" href="works.php">Все работы</a></div>
 </section>
 
 <section class="sec" id="how">
-  <h2>Фотографы</h2>
-  <p class="sub"><?= count(photographers()) ?> в каталоге · <?= e(DEFAULT_CITY) ?></p>
+  <div class="sec__head"><h2>Фотографы</h2><a class="text-link" href="photographers.php">Весь каталог, <?= count(photographers()) ?></a></div>
+  <p class="sub">Откройте имя, чтобы посмотреть портфолио целиком.</p>
   <div class="rows">
     <?php foreach ($people as $i => $p): ?><?= photographer_row($p, $i + 1) ?><?php endforeach; ?>
   </div>
-  <div class="center"><a class="btn" href="photographers.php">Весь каталог</a></div>
 </section>
 
 <?= cta_block() ?>

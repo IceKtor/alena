@@ -26,26 +26,25 @@ require __DIR__ . '/partials/header.php';
 
 <div class="cover">
   <?= img_tag('cover.jpg', 'Обложка профиля', '', false) ?>
-  <a class="crumb-back" href="<?= e($back) ?>">← Назад в каталог</a>
+  <a class="crumb-back" href="<?= e($back) ?>">Назад в каталог</a>
 </div>
 
 <section class="pf">
-  <img class="avatar avatar--xl" src="<?= e(photo_url($p['avatar'])) ?>" alt="<?= e($p['name']) ?>" width="150" height="150">
   <div class="pf__info">
+    <img class="avatar avatar--xl" src="<?= e(photo_url($p['avatar'])) ?>" alt="<?= e($p['name']) ?>" width="150" height="150">
     <h1><?= e($p['name']) ?></h1>
-    <div class="pf__meta">
+    <p class="pf__meta">
       <span class="city"><?= icon('pin') ?><?= e($p['city']) ?>, опыт <?= e($expText) ?></span>
-      <?php foreach ($p['genres'] as $g): ?><a class="chip" href="<?= e(url('photographers.php', ['genre' => [$g]])) ?>"><?= e(genre_name($g)) ?></a><?php endforeach; ?>
-    </div>
+      <span class="genres"><?php foreach ($p['genres'] as $i => $g): ?><?= $i ? ', ' : '' ?><a href="<?= e(url('photographers.php', ['genre' => [$g]])) ?>"><?= e($i ? mb_strtolower(genre_name($g)) : genre_name($g)) ?></a><?php endforeach; ?></span>
+    </p>
   </div>
   <div class="pf__cta">
     <?php if ($isOwn): ?>
       <a class="btn" href="cabinet.php?section=profile">Редактировать профиль</a>
     <?php else: ?>
-      <button type="button" class="btn btn--primary btn--lg" data-open-request data-id="<?= $p['id'] ?>" data-name="<?= e($p['name']) ?>" data-dative="<?= e(dative_first_name($p['name'])) ?>" data-avatar="<?= e(photo_url($p['avatar'])) ?>">Связаться</button>
+      <div class="pf__buttons"><?= fav_button($p['id'], 'Добавить в избранное') ?><button type="button" class="btn btn--primary btn--lg" data-open-request data-id="<?= $p['id'] ?>" data-name="<?= e($p['name']) ?>" data-dative="<?= e(dative_first_name($p['name'])) ?>" data-avatar="<?= e(photo_url($p['avatar'])) ?>">Связаться</button></div>
     <?php endif; ?>
-    <span class="mono">от <?= e(money($p['price'])) ?> за час</span>
-    <?php if (!$isOwn): ?><?= fav_button($p['id'], 'Добавить в избранное') ?><?php endif; ?>
+    <span class="pr">от <?= e(money($p['price'])) ?> в час</span>
   </div>
 </section>
 
@@ -63,7 +62,7 @@ require __DIR__ . '/partials/header.php';
     <div role="tabpanel" id="panel-portfolio" aria-labelledby="tab-portfolio">
       <div class="mas" data-gallery data-step="<?= GALLERY_STEP ?>">
         <?php foreach ($works as $i => $w): ?>
-          <figure<?= $i >= GALLERY_STEP ? ' hidden' : '' ?>>
+          <figure<?= ratio_style($w['file']) ?><?= $i >= GALLERY_STEP ? ' hidden' : '' ?>>
             <button type="button" data-lightbox="<?= e(photo_url($w['file'])) ?>" data-caption="<?= e($w['title'] . ' — ' . genre_name($w['genre'])) ?>">
               <?= img_tag($w['file'], $w['title'] . ' — ' . $p['name']) ?>
             </button>
@@ -84,7 +83,7 @@ require __DIR__ . '/partials/header.php';
     <div class="panel" role="tabpanel" id="panel-services" aria-labelledby="tab-services" hidden>
       <h2>Услуги и цены</h2>
       <ul class="pl">
-        <?php foreach ($services as $s): ?><li><span><?= e($s['title']) ?></span><span class="mono">от <?= e(money($s['price'])) ?></span></li><?php endforeach; ?>
+        <?php foreach ($services as $s): ?><li><span><?= e($s['title']) ?></span><span class="pr">от <?= e(money($s['price'])) ?></span></li><?php endforeach; ?>
       </ul>
       <?= price_note() ?>
     </div>
@@ -97,14 +96,6 @@ require __DIR__ . '/partials/header.php';
   </div>
 
   <aside class="side">
-    <section aria-labelledby="side-services">
-      <h2 id="side-services">Услуги и цены</h2>
-      <ul class="pl">
-        <?php foreach ($services as $s): ?><li><span><?= e($s['title']) ?></span><span class="mono">от <?= e(money($s['price'])) ?></span></li><?php endforeach; ?>
-      </ul>
-      <?php if (!$isOwn): ?><div style="margin-top:20px"><button type="button" class="btn btn--primary btn--block" data-open-request data-id="<?= $p['id'] ?>" data-name="<?= e($p['name']) ?>" data-dative="<?= e(dative_first_name($p['name'])) ?>" data-avatar="<?= e(photo_url($p['avatar'])) ?>">Связаться</button></div><?php endif; ?>
-      <?= price_note() ?>
-    </section>
     <section aria-labelledby="side-dates">
       <h2 id="side-dates">Свободные даты</h2>
       <ul class="dates">
@@ -112,16 +103,12 @@ require __DIR__ . '/partials/header.php';
       </ul>
       <p class="small"><?= e($p['dates_note']) ?></p>
     </section>
-    <section aria-labelledby="side-about">
-      <h2 id="side-about">Об авторе</h2>
-      <p><?= e($p['about']) ?></p>
-    </section>
   </aside>
 </div>
 
 <?php if (!$isOwn): ?>
   <div class="stick">
-    <div><strong class="mono" style="font-weight:500">от <?= e(money($p['price'])) ?> / час</strong><small>Ответит в течение дня</small></div>
+    <div><strong>от <?= e(money($p['price'])) ?> в час</strong><small>Ответит в течение дня</small></div>
     <button type="button" class="btn btn--primary" data-open-request data-id="<?= $p['id'] ?>" data-name="<?= e($p['name']) ?>" data-dative="<?= e(dative_first_name($p['name'])) ?>" data-avatar="<?= e(photo_url($p['avatar'])) ?>">Связаться</button>
   </div>
 <?php endif; ?>
