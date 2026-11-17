@@ -33,6 +33,7 @@ if exist ".git" goto :check_repository
 set "GIT_DIR=%SYNC_META%"
 set "GIT_WORK_TREE=%SYNC_ROOT%"
 if exist "%SYNC_META%\HEAD" goto :check_repository
+for %%d in ("%SYNC_META%") do if not exist "%%~dpd." mkdir "%%~dpd."
 "%SYNC_GIT%" init --quiet --initial-branch=development
 if errorlevel 1 goto :fail
 "%SYNC_GIT%" config --local alena-sync.managed true
