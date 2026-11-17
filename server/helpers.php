@@ -20,8 +20,11 @@ function qs(array $over = []): array
     return array_merge($_GET, $over);
 }
 
-function photo_url(string $file): string
+function photo_url(string $file, bool $full = false): string
 {
+    if (str_starts_with($file, 'work:')) {
+        return url('work-image.php', ['id' => (int) substr($file, 5), 'full' => $full ? 1 : null]);
+    }
     return 'img/photos/' . $file;
 }
 
@@ -30,7 +33,9 @@ function photo_size(string $file): array
 {
     static $cache = [];
     if (!isset($cache[$file])) {
-        $s = @getimagesize(__DIR__ . '/../img/photos/' . $file);
+        $s = str_starts_with($file, 'work:')
+            ? db_query('SELECT width, height FROM work_images WHERE work_id = ?', [(int) substr($file, 5)])->fetch(PDO::FETCH_NUM)
+            : @getimagesize(__DIR__ . '/../img/photos/' . $file);
         $cache[$file] = $s ? [$s[0], $s[1]] : [4, 3];
     }
     return $cache[$file];
@@ -121,7 +126,6 @@ function time_ago(int $hours): string
  * фильтры объединяются по «И», внутри «Жанр» — по «ИЛИ»;
  * включённый переключатель оставляет только фотографов с этой возможностью;
  * при равенстве сортировки порядок задаёт id (детерминированный результат).
- * TODO(DB): заменить на один SQL-запрос с WHERE … ORDER BY … LIMIT/OFFSET.
  */
 function search_photographers(array $f): array
 {

@@ -1,30 +1,13 @@
 <?php
-/**
- * Аутентификация, роли и защита от подделки запросов.
- *
- * ЗАГЛУШКА: пока нет таблицы users, вход работает только для двух демо-аккаунтов
- * (пароль demo12345), а регистрация лишь проверяет данные и «входит» в сессию,
- * ничего не сохраняя. Роли и проверки прав уже настоящие и работают на сервере (ТЗ 8.5).
- *
- * TODO(DB): demo_users() → SELECT по таблице users; пароли — только password_hash/password_verify.
- */
+/** Аутентификация, роли, избранное и защита от подделки запросов. */
 declare(strict_types=1);
 
 const ROLE_PHOTOGRAPHER = 'photographer';
 const ROLE_CLIENT       = 'client';
 
-/** TODO(DB): удалить, когда появится таблица users. */
-function demo_users(): array
-{
-    return [
-        ['id' => 1,   'name' => 'Алексей Петров', 'email' => 'foto@demo.ru',   'role' => ROLE_PHOTOGRAPHER, 'hash' => DEMO_PASSWORD_HASH],
-        ['id' => 101, 'name' => 'Мария Заказчик', 'email' => 'client@demo.ru', 'role' => ROLE_CLIENT,       'hash' => DEMO_PASSWORD_HASH],
-    ];
-}
-
 function current_user(): ?array
 {
-    return $_SESSION['user'] ?? null;
+    return $_SESSION['account'] ?? null;
 }
 
 function is_role(string $role): bool
@@ -45,7 +28,7 @@ function short_name(string $name): string
 function login_user(array $user): void
 {
     session_regenerate_id(true);
-    $_SESSION['user'] = ['id' => $user['id'], 'name' => $user['name'], 'email' => $user['email'], 'role' => $user['role']];
+    $_SESSION['account'] = ['id' => $user['id'], 'name' => $user['name'], 'email' => $user['email'], 'role' => $user['role']];
 }
 
 function logout_user(): void
@@ -61,17 +44,15 @@ function logout_user(): void
 /** Попытка входа. Возвращает пользователя или null (всегда одно общее сообщение). */
 function attempt_login(string $email, string $password): ?array
 {
-    foreach (demo_users() as $u) { // TODO(DB): найти пользователя по почте
-        if (mb_strtolower($u['email']) === mb_strtolower($email) && password_verify($password, $u['hash'])) {
-            return $u;
-        }
-    }
-    password_verify($password, DEMO_PASSWORD_HASH); // выравниваем время ответа
-    return null;
+    $user = db_query('SELECT id, name, email, role, password_hash FROM users WHERE email = ?',
+        [mb_strtolower($email)])->fetch();
+    // Проверяем хеш и для неизвестного адреса, чтобы не выдавать наличие аккаунта по времени ответа.
+    $hash = $user['password_hash'] ?? '$2y$10$.0TgJ.UygSu6qE2JGSoxq.Tjm8TJdceCNzXR6Xi9BtyJlYNtNtv1C';
+    $valid = password_verify($password, $hash);
+    return $valid && isset($user['password_hash']) ? $user : null;
 }
 
-/* ── Ограничение числа неудачных попыток входа (ТЗ 11.3) ──
- * Сейчас счётчик в сессии. TODO(DB): хранить по IP и почте в таблице login_attempts. */
+/* Ограничение неудачных попыток входа в текущей сессии. */
 function login_locked(): int
 {
     $until = (int) ($_SESSION['login_lock_until'] ?? 0);
@@ -107,11 +88,16 @@ function csrf_check(): bool
     return is_string($sent) && hash_equals(csrf_token(), $sent);
 }
 
-/* ── Избранное ──
- * ЗАГЛУШКА: список хранится в сессии. TODO(DB): таблица favorites (user_id, photographer_id). */
 function favorites(): array
 {
-    return array_map('intval', $_SESSION['fav'] ?? []);
+    if (!is_role(ROLE_CLIENT)) {
+        return [];
+    }
+    static $ids;
+    return $ids ??= array_map('intval', db_query(
+        'SELECT photographer_id FROM favorites WHERE user_id = ? ORDER BY photographer_id',
+        [current_user()['id']]
+    )->fetchAll(PDO::FETCH_COLUMN));
 }
 
 function is_favorite(int $photographerId): bool
@@ -121,16 +107,22 @@ function is_favorite(int $photographerId): bool
 
 function toggle_favorite(int $photographerId): bool
 {
-    $fav = favorites();
-    if (in_array($photographerId, $fav, true)) {
-        $fav = array_values(array_diff($fav, [$photographerId]));
-        $on = false;
-    } else {
-        $fav[] = $photographerId;
-        $on = true;
+    $userId = current_user()['id'];
+    $pdo = db();
+    $pdo->beginTransaction();
+    try {
+        db_query('SELECT id FROM users WHERE id = ? FOR UPDATE', [$userId]);
+        $deleted = db_query('DELETE FROM favorites WHERE user_id = ? AND photographer_id = ?',
+            [$userId, $photographerId])->rowCount();
+        if (!$deleted) {
+            db_query('INSERT INTO favorites (user_id, photographer_id) VALUES (?, ?)', [$userId, $photographerId]);
+        }
+        $pdo->commit();
+        return !$deleted;
+    } catch (Throwable $error) {
+        $pdo->rollBack();
+        throw $error;
     }
-    $_SESSION['fav'] = $fav;
-    return $on;
 }
 
 /** Общая подготовка API-эндпоинта: только POST, CSRF, JSON-ответ. */

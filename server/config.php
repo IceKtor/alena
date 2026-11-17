@@ -22,22 +22,7 @@ const MESSAGE_MAX      = 1000;
 const LOGIN_MAX_ATTEMPTS = 5;     // защита от перебора пароля (раздел 11.3)
 const LOGIN_LOCK_SECONDS = 300;
 
-/*
- * ─────────────────────────────────────────────────────────────────────────
- * ЗАГЛУШКА: подключение к базе данных (MySQL/MariaDB, phpMyAdmin).
- * Когда появится БД — заполнить эти значения (лучше брать из переменных
- * окружения) и реализовать server/db.php.
- * ─────────────────────────────────────────────────────────────────────────
- */
-const DB_HOST    = 'localhost';
-const DB_NAME    = 'obyektiv';
-const DB_USER    = 'root';
-const DB_PASS    = '';
-const DB_CHARSET = 'utf8mb4';
-const DB_ENABLED = false;         // пока false — используются данные из server/data.php
-
-/*
- * ЗАГЛУШКА: демо-аккаунты, пока нет таблицы users.
- * Пароль обоих: demo12345.  Удалить вместе с server/auth.php::demo_users().
- */
-const DEMO_PASSWORD_HASH = '$2y$10$.0TgJ.UygSu6qE2JGSoxq.Tjm8TJdceCNzXR6Xi9BtyJlYNtNtv1C';
+// Необязательный локальный файл с настройками хостинга, исключён из Git.
+if (is_file(__DIR__ . '/config.local.php')) {
+    require __DIR__ . '/config.local.php';
+}

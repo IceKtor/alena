@@ -17,5 +17,5 @@ $errors = collect_errors([
 if ($errors) {
     json_out(['ok' => false, 'errors' => $errors], 422);
 }
-save_feedback(['name' => $name, 'email' => $email, 'message' => $message]); // ЗАГЛУШКА, TODO(DB)
+save_feedback(['name' => $name, 'email' => $email, 'message' => $message]);
 json_out(['ok' => true, 'message' => 'Спасибо! Сообщение отправлено администрации платформы.']);

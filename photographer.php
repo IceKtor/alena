@@ -13,7 +13,10 @@ $back     = $_SESSION['catalog_back'] ?? 'photographers.php';
 $isOwn    = is_role(ROLE_PHOTOGRAPHER) && (int) current_user()['id'] === $p['id'];
 $expText  = $p['exp'] . ' ' . plural($p['exp'], 'год', 'года', 'лет');
 
-// TODO(DB): записывать факт просмотра профиля для статистики (ФТ-09): INSERT INTO profile_views.
+if (!$isOwn && ($_SERVER['REQUEST_METHOD'] ?? '') === 'GET') {
+    record_profile_view($p['id']);
+}
+$dates = photographer_dates($p['id']);
 
 page_start([
     'title'       => $p['name'] . ' — фотограф, ' . $p['city'],
@@ -63,9 +66,12 @@ require __DIR__ . '/partials/header.php';
       <div class="mas" data-gallery data-step="<?= GALLERY_STEP ?>">
         <?php foreach ($works as $i => $w): ?>
           <figure<?= ratio_style($w['file']) ?><?= $i >= GALLERY_STEP ? ' hidden' : '' ?>>
-            <button type="button" data-lightbox="<?= e(photo_url($w['file'])) ?>" data-caption="<?= e($w['title'] . ' — ' . genre_name($w['genre'])) ?>">
+            <button type="button" data-lightbox="<?= e(photo_url($w['file'], true)) ?>" data-caption="<?= e($w['title'] . ' — ' . genre_name($w['genre'])) ?>">
               <?= img_tag($w['file'], $w['title'] . ' — ' . $p['name']) ?>
             </button>
+            <?php if ($w['allow_download'] && $w['sample_file'] === null): ?>
+              <a class="text-link" href="<?= e(url('work-image.php', ['id' => $w['id'], 'download' => 1])) ?>">Скачать фото</a>
+            <?php endif; ?>
           </figure>
         <?php endforeach; ?>
       </div>
@@ -89,9 +95,9 @@ require __DIR__ . '/partials/header.php';
     </div>
 
     <div class="panel" role="tabpanel" id="panel-reviews" aria-labelledby="tab-reviews" hidden>
-      <!-- ЗАГЛУШКА (ФТ-16, желательное): отзывы. TODO(DB): таблица reviews; без вымышленных отзывов, микроразметку рейтингов не применять (ТЗ 16.1). -->
+      <!-- Отзывы пока не реализованы (ФТ-16). -->
       <h2>Отзывов пока нет</h2>
-      <p>Раздел появится вместе с базой данных.</p>
+      
     </div>
   </div>
 
@@ -99,9 +105,9 @@ require __DIR__ . '/partials/header.php';
     <section aria-labelledby="side-dates">
       <h2 id="side-dates">Свободные даты</h2>
       <ul class="dates">
-        <?php foreach ($p['dates'] as $i => $d): ?><li class="dt<?= $i === 1 ? ' on' : '' ?>"><?= $d ?></li><?php endforeach; ?>
+        <?php foreach ($dates as $date): ?><li class="dt"><time datetime="<?= e($date) ?>"><?= e(date('d.m', strtotime($date))) ?></time></li><?php endforeach; ?>
       </ul>
-      <p class="small"><?= e($p['dates_note']) ?></p>
+      <?php if (!$dates): ?><p class="small">Уточните свободные даты у фотографа.</p><?php endif; ?>
     </section>
   </aside>
 </div>

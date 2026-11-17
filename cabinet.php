@@ -27,7 +27,7 @@ if (!is_role(ROLE_PHOTOGRAPHER)) {
 }
 
 $user    = current_user();
-$me      = photographer_by_id((int) $user['id']);   // TODO(DB): профиль текущего пользователя
+$me      = photographer_by_id((int) $user['id']);
 $sections = [
     'works'    => ['Мои работы', 'image'],
     'profile'  => ['Профиль', 'camera'],
@@ -41,7 +41,7 @@ $section = isset($sections[$section]) ? $section : 'works';
 $stats    = photographer_stats((int) $user['id']);
 $requests = photographer_requests((int) $user['id']);
 $newCount = count(array_filter($requests, fn($r) => $r['status'] === 'new'));
-$myWorks  = $me ? photographer_works($me) : [];
+$myWorks  = $me ? photographer_works($me, true) : [];
 $statusLabels = ['new' => 'Новая', 'viewed' => 'Просмотрена', 'done' => 'Обработана'];
 
 require __DIR__ . '/partials/header.php';
@@ -64,18 +64,18 @@ require __DIR__ . '/partials/header.php';
         <button type="button" class="btn btn--primary" data-open-modal="work">Загрузить работу</button>
       </div>
       <ul class="met">
-        <li><strong><?= number_format($stats['views'], 0, ',', "\u{00A0}") ?></strong><span>просмотров профиля за месяц</span></li>
+        <li><strong><?= number_format((int) $stats['views'], 0, ',', "\u{00A0}") ?></strong><span>просмотров профиля за месяц</span></li>
         <li><strong><?= $stats['requests'] ?></strong><span>новых заявок</span></li>
         <li><strong><?= $stats['favorites'] ?></strong><span>добавили в избранное</span></li>
       </ul>
-      <h2 class="sh3">Опубликовано <?= count($myWorks) ?></h2>
+      <h2 class="sh3">Всего работ <?= count($myWorks) ?></h2>
       <div class="wg">
-        <?php foreach (array_slice($myWorks, 0, 8) as $w): ?>
+        <?php foreach (array_reverse($myWorks) as $w): ?>
           <figure>
             <div class="im"><?= img_tag($w['file'], $w['title']) ?>
-              <button type="button" class="ed" data-stub="Изменение и удаление работ появятся вместе с базой данных (ФТ-11)" aria-label="Изменить работу «<?= e($w['title']) ?>»"><?= icon('pencil') ?></button>
+              <button type="button" class="ed" data-stub="Редактирование работ пока недоступно (ФТ-11)" aria-label="Изменить работу «<?= e($w['title']) ?>»"><?= icon('pencil') ?></button>
             </div>
-            <figcaption><?= e($w['title']) ?><span>Просмотров: <?= $w['views'] ?></span></figcaption>
+            <figcaption><?= e($w['title']) ?><span><?= $w['is_public'] ? 'В портфолио' : 'Скрыта' ?></span></figcaption>
           </figure>
         <?php endforeach; ?>
       </div>
@@ -89,15 +89,36 @@ require __DIR__ . '/partials/header.php';
 
     <?php elseif ($section === 'profile'): ?>
       <div class="chead"><h1>Профиль</h1></div>
-      <!-- ЗАГЛУШКА (ФТ-11): редактирование профиля — форма без сохранения. TODO(DB): UPDATE photographer_profiles. -->
-      <form class="form" style="max-width:640px" data-stub-form="Сохранение профиля появится вместе с базой данных (ФТ-11)">
+      <form class="form" style="max-width:640px" data-api="server/api/profile.php">
         <div class="form-row">
-          <div class="field"><label for="p-name"><small>Имя</small></label><div class="v"><input id="p-name" value="<?= e($me['name'] ?? $user['name']) ?>"></div></div>
-          <div class="field"><label for="p-city"><small>Город</small></label><div class="v v--select"><select id="p-city"><?php foreach (cities() as $c): ?><option<?= ($me['city'] ?? '') === $c ? ' selected' : '' ?>><?= e($c) ?></option><?php endforeach; ?></select><?= icon('chevron') ?></div></div>
+          <div class="field">
+            <label for="p-name"><small>Имя</small></label>
+            <div class="v"><input id="p-name" name="name" maxlength="50" value="<?= e($me['name'] ?? $user['name']) ?>" required></div>
+            <p class="err" data-error-for="name" role="alert"></p>
+          </div>
+          <div class="field">
+            <label for="p-city"><small>Город</small></label>
+            <div class="v v--select"><select id="p-city" name="city"><?php foreach (cities() as $c): ?><option<?= ($me['city'] ?? '') === $c ? ' selected' : '' ?>><?= e($c) ?></option><?php endforeach; ?></select><?= icon('chevron') ?></div>
+            <p class="err" data-error-for="city" role="alert"></p>
+          </div>
         </div>
-        <div class="field"><label for="p-price"><small>Цена «от», ₽ за час</small></label><div class="v"><input id="p-price" type="number" min="<?= PRICE_MIN ?>" max="<?= PRICE_MAX ?>" value="<?= (int) ($me['price'] ?? 3000) ?>"></div></div>
-        <div class="field"><label for="p-about"><small>Об авторе</small></label><div class="v v--area"><textarea id="p-about" rows="4"><?= e($me['about'] ?? '') ?></textarea></div></div>
-        <p class="hint" style="text-align:left">Аватар, обложка, услуги и свободные даты — загрузка появится вместе с базой данных.</p>
+        <div class="field">
+          <label for="p-price"><small>Цена «от», ₽ за час</small></label>
+          <div class="v"><input id="p-price" name="price" type="number" min="<?= PRICE_MIN ?>" max="<?= PRICE_MAX ?>" value="<?= (int) ($me['price'] ?? 3000) ?>" required></div>
+          <p class="err" data-error-for="price" role="alert"></p>
+        </div>
+        <div class="field">
+          <label for="p-about"><small>Об авторе</small></label>
+          <div class="v v--area"><textarea id="p-about" name="about" rows="4" maxlength="1000"><?= e($me['about'] ?? '') ?></textarea></div>
+          <p class="err" data-error-for="about" role="alert"></p>
+        </div>
+        <fieldset class="field">
+          <legend>Жанры</legend>
+          <?php foreach (genres() as $slug => $label): ?>
+            <label class="chk"><input type="checkbox" name="genres[]" value="<?= e($slug) ?>"<?= in_array($slug, $me['genres'] ?? [], true) ? ' checked' : '' ?>><s><?= icon('check') ?></s><span><?= e($label) ?></span></label>
+          <?php endforeach; ?>
+        </fieldset>
+        <p class="form__error" data-form-error role="alert"></p>
         <div><button type="submit" class="btn btn--primary">Сохранить</button></div>
       </form>
 
@@ -116,13 +137,14 @@ require __DIR__ . '/partials/header.php';
               </div>
               <div class="st">
                 <span class="tag tag--<?= e($r['status']) ?>"><i></i><?= e($statusLabels[$r['status']]) ?></span>
-                <!-- ЗАГЛУШКА (ФТ-12): смена статуса. TODO(DB): UPDATE requests SET status = ? WHERE id = ? AND profile_id = текущий -->
-                <div class="field">
+                <form class="field" data-api="server/api/request-status.php">
+                  <input type="hidden" name="id" value="<?= $r['id'] ?>">
                   <label class="sr-only" for="st-<?= $r['id'] ?>">Статус заявки</label>
-                  <div class="v v--select"><select id="st-<?= $r['id'] ?>" data-stub-change="Смена статуса сохранится вместе с базой данных (ФТ-12)">
+                  <div class="v v--select"><select id="st-<?= $r['id'] ?>" name="status">
                     <?php foreach ($statusLabels as $k => $l): ?><option value="<?= $k ?>"<?= $r['status'] === $k ? ' selected' : '' ?>><?= e($l) ?></option><?php endforeach; ?>
                   </select><?= icon('chevron') ?></div>
-                </div>
+                  <button type="submit" class="btn btn--sm">Сохранить</button>
+                </form>
               </div>
             </article>
           <?php endforeach; ?>
@@ -132,19 +154,19 @@ require __DIR__ . '/partials/header.php';
     <?php elseif ($section === 'stats'): ?>
       <div class="chead"><h1>Статистика</h1></div>
       <ul class="met">
-        <li><strong><?= number_format($stats['views'], 0, ',', "\u{00A0}") ?></strong><span>просмотров профиля за месяц</span></li>
-        <li><strong><?= $stats['requests'] ?></strong><span>заявок за месяц</span></li>
+        <li><strong><?= number_format((int) $stats['views'], 0, ',', "\u{00A0}") ?></strong><span>просмотров профиля за месяц</span></li>
+        <li><strong><?= $stats['monthly_requests'] ?></strong><span>заявок за месяц</span></li>
         <li><strong><?= $stats['favorites'] ?></strong><span>добавили в избранное</span></li>
       </ul>
-      <p class="note">Учитывается только факт просмотра, сторонняя аналитика не подключена. Значения условные.</p>
+      <p class="note">Просмотры собственного профиля не учитываются.</p>
 
     <?php else: ?>
       <div class="chead"><h1>Настройки</h1></div>
       <!-- ЗАГЛУШКА (ФТ-19, желательное): пароль, уведомления, удаление аккаунта -->
-      <label class="tg"><input type="checkbox" checked data-stub-change="Настройки уведомлений появятся вместе с базой данных (ФТ-17, ФТ-19)"><s></s><span>Уведомлять о новых заявках по почте</span></label>
+      <label class="tg"><input type="checkbox" checked data-stub-change="Настройки уведомлений пока недоступны (ФТ-17, ФТ-19)"><s></s><span>Уведомлять о новых заявках по почте</span></label>
       <div class="settings-actions">
-        <button type="button" class="btn" data-stub="Смена пароля появится вместе с базой данных (ФТ-19)">Сменить пароль</button>
-        <button type="button" class="btn" data-stub="Удаление аккаунта появится вместе с базой данных (ФТ-19)">Удалить аккаунт</button>
+        <button type="button" class="btn" data-stub="Смена пароля пока недоступно (ФТ-19)">Сменить пароль</button>
+        <button type="button" class="btn" data-stub="Удаление аккаунта пока недоступно (ФТ-19)">Удалить аккаунт</button>
       </div>
     <?php endif; ?>
   </div>

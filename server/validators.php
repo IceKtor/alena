@@ -9,7 +9,7 @@ declare(strict_types=1);
 const MSG_NAME     = 'Укажите имя от 2 до 50 букв';
 const MSG_EMAIL    = 'Укажите почту в формате name@mail.ru';
 const MSG_EMAIL_DUP = 'Эта почта уже зарегистрирована';
-const MSG_PASSWORD = 'Пароль не короче 8 символов, с буквой и цифрой';
+const MSG_PASSWORD = 'Пароль от 8 символов и до 72 байт, с буквой и цифрой';
 const MSG_CONTACT  = 'Укажите телефон или почту для связи';
 const MSG_DATE     = 'Укажите дату не раньше сегодняшней';
 const MSG_GENRE    = 'Выберите жанр из списка';
@@ -35,7 +35,7 @@ function v_email(string $v): ?string
 
 function v_password(string $v): ?string
 {
-    if (strlen($v) < 8 || strlen($v) > 200 || !preg_match('/\p{L}/u', $v) || !preg_match('/\d/', $v)) {
+    if (strlen($v) < 8 || strlen($v) > 72 || str_contains($v, "\0") || !preg_match('/\p{L}/u', $v) || !preg_match('/\d/', $v)) {
         return MSG_PASSWORD;
     }
     return null;

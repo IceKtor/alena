@@ -37,8 +37,8 @@ if ($errors) {
 if (!str_contains($contact, '@')) {
     $contact = normalize_phone($contact) ?? $contact;
 }
-save_request([ // ЗАГЛУШКА: TODO(DB) — INSERT INTO requests (status = 'new')
+save_request([
     'photographer_id' => $pid, 'name' => $name, 'contact' => $contact,
-    'date' => $date, 'genre' => $genre, 'message' => $message, 'consent' => true,
+    'date' => $date, 'genre' => $genre, 'message' => $message,
 ]);
 json_out(['ok' => true, 'message' => 'Заявка отправлена. ' . $p['name'] . ' свяжется с вами по указанным контактам.']);

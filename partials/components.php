@@ -25,9 +25,9 @@ function fav_button(int $photographerId, string $label = 'В избранное'
 /** Работы фотографа, сдвинутые по его id, чтобы у соседних карточек не совпадали первые снимки. */
 function lead_works(array $p, int $n): array
 {
-    $k = $p['id'] % max(1, count($p['works']));
-    $w = array_merge(array_slice($p['works'], $k), array_slice($p['works'], 0, $k));
-    return array_slice($w, 0, $n);
+    $works = photographer_works($p);
+    $offset = $p['id'] % max(1, count($works));
+    return array_slice(array_merge(array_slice($works, $offset), array_slice($works, 0, $offset)), 0, $n);
 }
 
 /** Пропорция снимка для раскладки по рядам: ширина ряда делится по пропорциям фото, порядок — слева направо. */
@@ -50,10 +50,9 @@ function work_figure(array $w, bool $showTime = false, bool $isNew = false): str
 /** Строка фотографа на главной: имя и жанры слева, крупная лента работ справа. */
 function photographer_row(array $p, int $i): string
 {
-    $catalog = photo_catalog();
     $th = '';
-    foreach (lead_works($p, 4) as $key) {
-        $th .= img_tag($catalog[$key]['file'], $catalog[$key]['title'] . ' — ' . $p['name']);
+    foreach (lead_works($p, 4) as $work) {
+        $th .= img_tag($work['file'], $work['title'] . ' — ' . $p['name']);
     }
     return '<a class="row" href="' . e(url('photographer.php', ['id' => $p['id']])) . '">'
         . '<span class="row__who"><span class="nm">' . e($p['name']) . '</span>'
@@ -66,10 +65,9 @@ function photographer_row(array $p, int $i): string
 function photographer_card(array $p): string
 {
     $profile = url('photographer.php', ['id' => $p['id']]);
-    $catalog = photo_catalog();
     $col = '';
-    foreach (lead_works($p, 3) as $key) {
-        $col .= img_tag($catalog[$key]['file'], $catalog[$key]['title']);
+    foreach (lead_works($p, 3) as $work) {
+        $col .= img_tag($work['file'], $work['title']);
     }
     return '<article class="pc"><a class="col" href="' . e($profile) . '" tabindex="-1" aria-hidden="true">' . $col . '</a>'
         . '<h3 class="pc__name"><a href="' . e($profile) . '">' . e($p['name']) . '</a></h3>'

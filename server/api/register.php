@@ -23,10 +23,16 @@ if ($errors) {
     json_out(['ok' => false, 'errors' => $errors], 422);
 }
 
-// ЗАГЛУШКА: пользователь не сохраняется в БД, а только входит в сессию. TODO(DB): save_user() → INSERT.
-$user = save_user([
-    'name' => $name, 'email' => mb_strtolower($email), 'role' => $role,
-    'hash' => password_hash($pass, PASSWORD_DEFAULT),
-]);
+try {
+    $user = save_user([
+        'name' => $name, 'email' => mb_strtolower($email), 'role' => $role,
+        'hash' => password_hash($pass, PASSWORD_DEFAULT),
+    ]);
+} catch (PDOException $error) {
+    if ((int) ($error->errorInfo[1] ?? 0) === 1062 && user_email_exists($email)) {
+        json_out(['ok' => false, 'errors' => ['email' => MSG_EMAIL_DUP]], 422);
+    }
+    throw $error;
+}
 login_user($user);
 json_out(['ok' => true, 'redirect' => $role === ROLE_PHOTOGRAPHER ? 'cabinet.php' : null]);

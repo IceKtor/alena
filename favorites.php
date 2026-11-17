@@ -7,7 +7,7 @@ page_start(['title' => 'Избранное', 'noindex' => true]);
 $user = current_user();
 $list = [];
 if (is_role(ROLE_CLIENT)) {
-    foreach (favorites() as $id) { // TODO(DB): SELECT … FROM favorites JOIN photographer_profiles
+    foreach (favorites() as $id) {
         if ($p = photographer_by_id($id)) {
             $list[] = $p;
         }
